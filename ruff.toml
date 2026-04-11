@@ -1,0 +1,44 @@
+[lint]
+select = [
+    # Core logic and imports
+    "F",     # Pyflakes - catches real bugs
+    "E",     # Pycodestyle errors - PEP 8 compliance
+
+    # Bug prevention
+    "B",     # flake8-bugbear - common bug patterns
+
+    # Code quality
+    "C90",   # mccabe complexity
+    "N",     # pep8-naming - consistent naming
+    "UP",    # pyupgrade - modern Python patterns
+    "RUF",   # Ruff-specific rules
+
+    # Best practices
+    "PERF",  # Performance improvements
+    "SIM",   # Code simplification
+
+    # Selected documentation
+    "D101", "D102", "D103",  # Require docstrings for public classes/methods/functions
+
+    # Selected Pylint rules
+    "PLW",   # pylint warnings
+    "PLE",   # pylint errors
+
+    # Unused arguments
+    "ARG",   # flake8-unused-arguments
+]
+
+ignore = [
+    # Security: Allow asserts in tests
+    "S101",
+
+    # Magic values: Leave to code review agent
+    "PLR2004",
+
+    # Line length: Fine if long
+    "E501",
+]
+
+[lint.pylint]
+max-args = 5
+max-statements = 30

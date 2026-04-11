@@ -1,0 +1,53 @@
+[project]
+name = "ems-line-controller-dlr-pcb"
+version = "1.0.0-beta"
+requires-python = "==3.13.2"
+dependencies = [
+    "sympy>=1.13.0",
+    "pint>=0.24.0",
+    "uncertainties>=3.2.0",
+    "numpy>=2.1.0",
+    "scipy>=1.14.0",
+    "matplotlib>=3.9.0",
+    "pydantic>=2.9.2",
+    "pyyaml>=6.0.2",
+    "PySpice>=1.5",
+    "schemdraw>=0.19",
+    "skidl>=2.0",
+    "kicad-sch-api>=0.5.6",
+]
+
+[dependency-groups]
+dev = [
+    "black[d]>=26.3.1",
+    "poethepoet>=0.32.0",
+    "pytest>=8.3.4",
+    "ruff>=0.8.4",
+    "pytest-cov>=6.0.0",
+    "jupyter>=1.0.0",
+    "nbconvert>=7.16.0",
+    "pip>=25.1.1",
+]
+
+# Workflow: checks → notebook → build → sim → validate → inspect → drawings
+# PCB layout flow: build generates netlist → inspect-asm opens KiCad → place, route → commit .kicad_pcb → drawings
+[tool.poe.tasks]
+format = "black ."
+lint = "ruff check"
+checks = ["format", "lint"]
+notebook = "jupyter nbconvert --execute --inplace theory.ipynb"
+build = { cmd = "python cad/netlist/model.py", env = { PYTHONPATH = "." } }
+inspect-model = "bash -c 'nohup eeschema cad/cm4_carrier.kicad_sch &>/dev/null &'"
+validate-model = "kicad-cli sch erc cad/cm4_carrier.kicad_sch"
+validate-asm = "bash -c 'if [ -f cad/cm4_carrier.kicad_pcb ]; then kicad-cli pcb drc cad/cm4_carrier.kicad_pcb; else echo \"No .kicad_pcb yet — route in pcbnew first\"; fi'"
+inspect-asm = "bash -c 'nohup kicad cad/cm4_carrier.kicad_pro &>/dev/null &'"
+generate-model = ["build", { cmd = "bash -c 'mkdir -p output/drawings && kicad-cli sch export svg cad/cm4_carrier.kicad_sch -b -e -n -o output/drawings/ && mv output/drawings/cm4_carrier.svg output/drawings/cm4_carrier_web.svg && python cad/drawing/svg_dark.py output/drawings/cm4_carrier_web.svg output/drawings/cm4_carrier_web_dark.svg && kicad-cli sch export pdf cad/cm4_carrier.kicad_sch -b --drawing-sheet cad/drawing-sheet.kicad_wks -o output/drawings/cm4_carrier_drawing.pdf'" }]
+generate-asm = "bash -c 'if [ -f cad/cm4_carrier.kicad_pcb ]; then mkdir -p output/gerbers output/fab && kicad-cli pcb export gerbers cad/cm4_carrier.kicad_pcb -o output/gerbers/ && kicad-cli pcb export drill cad/cm4_carrier.kicad_pcb -o output/gerbers/ && kicad-cli pcb export step cad/cm4_carrier.kicad_pcb -o output/cm4_carrier_pcb.step && kicad-cli pcb export svg cad/cm4_carrier.kicad_pcb -l F.Cu,B.Cu,Edge.Cuts,F.Silkscreen --black-and-white --exclude-drawing-sheet --page-size-mode 2 --mode-single -o output/drawings/cm4_carrier_pcb.svg && kicad-cli sch export bom cad/cm4_carrier.kicad_sch -o output/fab/bom.csv --fields \"Reference,Value,Footprint,\\${QUANTITY}\" --labels \"Designator,Comment,Footprint,Quantity\" --group-by \"Value,Footprint\" --exclude-dnp && kicad-cli pcb export pos cad/cm4_carrier.kicad_pcb -o output/fab/cpl.csv --format csv --units mm --side both --smd-only --exclude-dnp; else echo \"No .kicad_pcb yet — route in pcbnew first\"; fi'"
+healthcheck = "bash -c 'command -v kicad-cli >/dev/null && kicad-cli version && command -v java >/dev/null && java -version 2>&1 | head -1 && test -f ~/tools/freerouting.jar && echo TOOLS_READY'"
+sim = "pytest -vv sim/"
+cover = "pytest -vv --cov sim/"
+review = "claude 'run code-reviewer agent against diff for quality and elegance'"
+commit = "bash -c 'uv run poe checks && uv run poe cover && uv run poe review && git add -A && git cz && git push'"
+
+[tool.coverage.run]
+omit = ["*/test_*.py"]

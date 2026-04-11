@@ -1,5 +1,25 @@
 stages:
+  - check
   - mirror
+
+checks:
+  stage: check
+  script:
+    - mkdir -p sim/results
+    - uv run poe checks
+    - uv run poe notebook
+    - uv run poe build
+    - uv run pytest --junitxml=junit.xml
+    - uv run poe cover
+    - uv run coverage xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 mirror:
   stage: mirror

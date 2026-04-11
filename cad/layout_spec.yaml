@@ -1,0 +1,63 @@
+sheet_size: A3
+title: "CM4 Carrier Board"
+schematic_path: "cad/cm4_carrier.kicad_sch"
+
+blocks:
+  power:
+    position: [8, 8]
+    components: [J1, F1, Q1, C1, C2]
+    signal_flow: left_to_right
+    power_rail: "+5V"
+    ground: true
+    labels:
+      right: [5V_RAIL]
+
+  cm4:
+    position: [82, 32]
+    components: [J2]
+    ground: true
+    labels:
+      left: [SDA, SCL, UART_TX, UART_RX, MOSI, MISO, SCK, SPI_CS0, RS485_TX, RS485_RX]
+
+  rs485:
+    position: [112, 8]
+    components: [U1, R1, R2, R3, J3, C3]
+    signal_flow: left_to_right
+    power_rail: "+3V3"
+    ground: true
+    labels:
+      left: [RS485_TX, RS485_RX]
+
+  usb_uart:
+    position: [8, 64]
+    components: [U2, J4, C4]
+    signal_flow: left_to_right
+    power_rail: "+3V3"
+    ground: true
+    labels:
+      left: [UART_TX, UART_RX]
+
+  io_headers:
+    position: [112, 62]
+    components: [R4, R5, J5, J6, J7]
+    power_rail: "+3V3"
+    ground: true
+    labels:
+      left: [SDA, SCL, MOSI, MISO, SCK, SPI_CS0]
+
+  decoupling:
+    position: [112, 100]
+    components: [C5, C6, C7, C8]
+    power_rail: "+3V3"
+    ground: true
+
+pcb:
+  board_size: [100, 80]
+  board_origin: [100, 80]
+
+layout_rules:
+  min_component_spacing: 8
+  power_symbol_position: top
+  ground_symbol_position: bottom
+  decoupling_near_ic: true
+  routing: labels
