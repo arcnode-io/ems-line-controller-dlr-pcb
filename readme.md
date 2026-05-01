@@ -32,11 +32,11 @@ rectangle line_controller_pst
 
 solar_panel -d- lifepo4_battery: charge
 lifepo4_battery -d- raspberry_pi: 5V regulated
-conductor -u- dlr_pcb: thermal view\n(FLIR Lepton)
+conductor -d- dlr_pcb: thermal view\n(FLIR Lepton)
 dlr_pcb -d- raspberry_pi: 40-pin HAT connector
 raspberry_pi -r- cellular_modem: USB / RS-485
 cellular_modem -r- mqtt_broker: LTE Cat-M1
-mqtt_broker -r- line_controller_pst: tap adjustment commands
+mqtt_broker -r- line_controller_pst: tap \n adjustment \n commands
 ```
 
 The PCB is the physical sensing layer of the DLR feedback loop. Every measurement it takes flows through the IEEE 738 calculation in [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr) and ultimately determines whether the phase shift transformer adjusts its tap position.
