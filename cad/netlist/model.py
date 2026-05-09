@@ -1,7 +1,10 @@
-"""CM4 carrier board netlist generation.
+"""DLR carrier board top-level netlist.
 
-SKiDL defines the circuit topology -> KiCad netlist.
-Modular: power, comms, and I/O sections in separate files.
+Wires power chain (solar -> MPPT -> battery -> buck -> LDOs) to:
+  - CM4 SoM (som.py)
+  - Cellular interface (cellular.py): BG770A + TXS0108E + u.FL
+  - IEEE 738 sensors (sensors.py): FLIR + DHT22 + SI1145 + ADS1115/YL-83
+  - Off-board connectors (connectors.py): battery + debug UART
 """
 
 import os
@@ -18,113 +21,119 @@ for v in (
 
 import skidl  # noqa: E402
 
-from cad.netlist.comms import build_rs485, build_usb_uart  # noqa: E402
-from cad.netlist.io_headers import (  # noqa: E402
-    build_gpio_header,
-    build_i2c_header,
-    build_spi_header,
+from cad.netlist.cellular import build_cellular  # noqa: E402
+from cad.netlist.connectors import (  # noqa: E402
+    build_battery_connector,
+    build_debug_header,
 )
-from cad.netlist.power import build_power  # noqa: E402
+from cad.netlist.power import (  # noqa: E402
+    build_buck_5v,
+    build_ldo_3v3,
+    build_ldo_3v8,
+    build_mppt_charger,
+    build_solar_input,
+)
+from cad.netlist.sensors import build_sensors  # noqa: E402
+from cad.netlist.som import build_cm4  # noqa: E402
 
-NETLIST_PATH = "cad/cm4_carrier.net"
+NETLIST_PATH = "cad/dlr_carrier.net"
 
 
 def build_netlist() -> None:
-    """Define CM4 carrier board in SKiDL and generate KiCad netlist."""
-    v5_in = skidl.Net("5V_IN")
+    """Define DLR carrier board in SKiDL and generate KiCad netlist."""
+    # Power rails
+    pv_in = skidl.Net("PV_IN")
+    vbat = skidl.Net("VBAT")
     v5_rail = skidl.Net("5V_RAIL")
     v3v3 = skidl.Net("3V3")
+    v3v8 = skidl.Net("3V8_CELL")
     gnd = skidl.Net("GND")
 
-    uart_tx = skidl.Net("UART_TX")
-    uart_rx = skidl.Net("UART_RX")
-    sda = skidl.Net("SDA")
-    scl = skidl.Net("SCL")
-    mosi = skidl.Net("MOSI")
-    miso = skidl.Net("MISO")
-    sck = skidl.Net("SCK")
-    cs = skidl.Net("SPI_CS0")
-    rs485_tx = skidl.Net("RS485_TX")
-    rs485_rx = skidl.Net("RS485_RX")
+    # CM4 GPIO buses
+    sda = skidl.Net("SDA1")
+    scl = skidl.Net("SCL1")
+    spi_mosi = skidl.Net("SPI0_MOSI")
+    spi_miso = skidl.Net("SPI0_MISO")
+    spi_sck = skidl.Net("SPI0_SCLK")
+    spi_ce0 = skidl.Net("SPI0_CE0")
+    uart_tx = skidl.Net("UART_TX_3V3")
+    uart_rx = skidl.Net("UART_RX_3V3")
+    gpio4 = skidl.Net("GPIO4_DHT22")
+    gpio25 = skidl.Net("GPIO25_VSYNC")
+    cell_en = skidl.Net("CELL_EN")
+    usb_dp = skidl.Net("USB_DP")
+    usb_dm = skidl.Net("USB_DM")
+    pwrkey = skidl.Net("CELL_PWRKEY")
+    reset_n = skidl.Net("CELL_RESET")
+    status = skidl.Net("CELL_STATUS")
+    net_status = skidl.Net("CELL_NET_STATUS")
+    shifter_oe = skidl.Net("SHIFTER_OE")
+    dbg_tx = skidl.Net("DBG_TX")
+    dbg_rx = skidl.Net("DBG_RX")
 
-    build_power(v5_in, v5_rail, gnd)
-    _build_cm4_connector(
-        v5_rail,
-        v3v3,
-        gnd,
-        uart_tx,
-        uart_rx,
-        sda,
-        scl,
-        mosi,
-        miso,
-        sck,
-        cs,
-        rs485_tx,
-        rs485_rx,
+    # Power chain
+    build_solar_input(pv_in, gnd)
+    build_mppt_charger(pv_in, vbat, gnd)
+    build_battery_connector(vbat, gnd)
+    build_buck_5v(vbat, v5_rail, gnd)
+    build_ldo_3v3(v5_rail, v3v3, gnd)
+    build_ldo_3v8(v5_rail, v3v8, cell_en, gnd)
+
+    # SoM + consumers
+    build_cm4(
+        v5_in=v5_rail,
+        v3v3=v3v3,
+        gnd=gnd,
+        sda=sda,
+        scl=scl,
+        spi_mosi=spi_mosi,
+        spi_miso=spi_miso,
+        spi_sck=spi_sck,
+        spi_ce0=spi_ce0,
+        uart_tx=uart_tx,
+        uart_rx=uart_rx,
+        gpio4=gpio4,
+        gpio25=gpio25,
+        cell_en=cell_en,
+        usb_dp=usb_dp,
+        usb_dm=usb_dm,
+        pwrkey=pwrkey,
+        reset_n=reset_n,
+        status=status,
+        net_status=net_status,
+        shifter_oe=shifter_oe,
+        dbg_tx=dbg_tx,
+        dbg_rx=dbg_rx,
     )
-    build_rs485(rs485_tx, rs485_rx, v3v3, gnd)
-    build_usb_uart(uart_tx, uart_rx, v3v3, gnd)
-    build_i2c_header(sda, scl, v3v3, gnd)
-    build_spi_header(mosi, miso, sck, cs, v3v3, gnd)
-    build_gpio_header(v3v3, gnd)
-    _build_decoupling(v3v3, gnd, count=4)
+    build_cellular(
+        v3v8=v3v8,
+        v3v3=v3v3,
+        gnd=gnd,
+        usb_dp=usb_dp,
+        usb_dm=usb_dm,
+        uart_tx_cm4=uart_tx,
+        uart_rx_cm4=uart_rx,
+        pwrkey=pwrkey,
+        reset_n=reset_n,
+        status=status,
+        net_status=net_status,
+        shifter_oe=shifter_oe,
+    )
+    build_sensors(
+        v3v3=v3v3,
+        gnd=gnd,
+        sda=sda,
+        scl=scl,
+        spi_mosi=spi_mosi,
+        spi_miso=spi_miso,
+        spi_sck=spi_sck,
+        spi_ce0=spi_ce0,
+        gpio4=gpio4,
+        gpio25=gpio25,
+    )
+    build_debug_header(v3v3, gnd, dbg_tx, dbg_rx)
 
     skidl.generate_netlist(file_=NETLIST_PATH, tool=skidl.KICAD8)
-
-
-def _build_cm4_connector(
-    v5_rail: skidl.Net,
-    v3v3: skidl.Net,
-    gnd: skidl.Net,
-    uart_tx: skidl.Net,
-    uart_rx: skidl.Net,
-    sda: skidl.Net,
-    scl: skidl.Net,
-    mosi: skidl.Net,
-    miso: skidl.Net,
-    sck: skidl.Net,
-    cs: skidl.Net,
-    rs485_tx: skidl.Net,
-    rs485_rx: skidl.Net,
-) -> None:
-    """CM4 module connector — 2x20 header as DF40 placeholder."""
-    # Reason: Hirose DF40 100-pin not in standard KiCad libs
-    j = skidl.Part(
-        "Connector_Generic",
-        "Conn_02x20_Odd_Even",
-        footprint="Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical",
-    )
-    j.value = "CM4"
-    # Reason: pin assignments per RPi CM4 datasheet GPIO header
-    v5_rail += j[1]
-    gnd += j[2]
-    v5_rail += j[3]
-    gnd += j[4]
-    v3v3 += j[5]
-    sda += j[7]
-    scl += j[9]
-    uart_tx += j[11]
-    uart_rx += j[13]
-    mosi += j[15]
-    miso += j[17]
-    sck += j[19]
-    cs += j[21]
-    rs485_tx += j[23]
-    rs485_rx += j[25]
-
-
-def _build_decoupling(v3v3: skidl.Net, gnd: skidl.Net, count: int) -> None:
-    """Add 100nF decoupling caps for CM4."""
-    for _ in range(count):
-        c = skidl.Part(
-            "Device",
-            "C",
-            value="100nF",
-            footprint="Capacitor_SMD:C_0402_1005Metric",
-        )
-        v3v3 += c[1]
-        gnd += c[2]
 
 
 if __name__ == "__main__":

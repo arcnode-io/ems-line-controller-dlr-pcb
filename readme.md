@@ -4,23 +4,25 @@
 ![](https://gitlab.com/arcnode-io/ems-line-controller-dlr-pcb/badges/main/coverage.svg)
 ![](https://img.shields.io/badge/3.13-gray?logo=python)
 ![](https://img.shields.io/badge/cad-kicad-314CB0)
-![](https://img.shields.io/badge/pi_compatible-gray?logo=raspberrypi)
-![](https://img.shields.io/badge/material-FR4_1.6mm-gray)
+![](https://img.shields.io/badge/material-FR4_1.6mm_4L-gray)
 
-> Sensor HAT for a solar-powered, cellular-connected RTU — mounts to a transmission tower cross-arm, feeds IEEE 738 calculations via [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr)
+> Single-PCB CM4 carrier for a solar-powered, cellular-connected RTU — mounts to a transmission tower cross-arm, integrates SoM + cellular modem + IEEE 738 sensor suite + solar/LiFePO4 power management. Feeds [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr).
 
-Solar-powered remote terminal unit (RTU) deployed unattended on transmission tower cross-arms. A small solar panel and LiFePO4 battery keep the Pi running indefinitely. A cellular modem (LTE Cat-M1) publishes sensor data and dynamic ratings to the MQTT broker — no site WiFi or wired backhaul required. The unit is designed for 30-year conductor-adjacent deployment with no scheduled maintenance.
+Solar-powered remote terminal unit (RTU) deployed unattended on transmission tower cross-arms. A ~20W solar panel and ~50Wh LiFePO4 battery keep the CM4 running indefinitely with cellular PSM idle. A soldered Quectel BG770A (LTE Cat-M1) publishes sensor data and dynamic ratings to the MQTT broker — no site WiFi or wired backhaul required. The unit is designed for 30-year conductor-adjacent deployment with no scheduled maintenance.
 
-65x56mm 4-layer Pi HAT. FLIR Lepton 3.5 (SPI), DHT22 (GPIO), SI1145 (I2C), YL-83 (ADC via ADS1115). 5V from Pi header, 3.3V LDO for analog front-end. Conformal coated, IP55 when potted inside the field enclosure.
+~100x80mm 4-layer industrial carrier. Raspberry Pi CM4 (DF40 dual-connector) + Quectel BG770A LCC + FLIR Lepton 3.5 (SPI) + DHT22 (GPIO) + SI1145 (I2C) + YL-83 (analog via ADS1115). MPPT charger from PV input, LiFePO4 BMS, buck for 5V SoM rail, AP2112K LDO for 3.3V analog front-end. Conformal coated, IP55 when potted in field enclosure.
 
 ## System Context
 
 ```plantuml
 rectangle transmission_tower {
   rectangle field_enclosure {
-    rectangle dlr_pcb
-    rectangle raspberry_pi
-    rectangle cellular_modem
+    rectangle dlr_carrier {
+      rectangle cm4_som
+      rectangle cellular_module
+      rectangle sensors
+      rectangle power_mgmt
+    }
   }
   rectangle solar_panel
   rectangle lifepo4_battery
@@ -30,38 +32,51 @@ rectangle transmission_tower {
 queue mqtt_broker
 rectangle line_controller_pst
 
-solar_panel -d- lifepo4_battery: charge
-lifepo4_battery -d- raspberry_pi: 5V regulated
-conductor -d- dlr_pcb: thermal view\n(FLIR Lepton)
-dlr_pcb -d- raspberry_pi: 40-pin HAT connector
-raspberry_pi -r- cellular_modem: USB / RS-485
-cellular_modem -r- mqtt_broker: LTE Cat-M1
+solar_panel -d- power_mgmt: PV input
+power_mgmt -l- lifepo4_battery: charge / discharge
+power_mgmt -d- cm4_som: 5V / 3V3
+conductor -u- sensors: thermal view\n(FLIR Lepton)
+sensors -r- cm4_som: SPI / I2C / GPIO
+cm4_som -r- cellular_module: UART + USB2
+cellular_module -r- mqtt_broker: LTE Cat-M1
 mqtt_broker -r- line_controller_pst: tap \n adjustment \n commands
 ```
 
-The PCB is the physical sensing layer of the DLR feedback loop. Every measurement it takes flows through the IEEE 738 calculation in [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr) and ultimately determines whether the phase shift transformer adjusts its tap position.
+The carrier is the physical sensing + edge-compute layer of the DLR feedback loop. Every measurement flows through the IEEE 738 calculation in [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr) and ultimately determines whether the phase shift transformer adjusts its tap position.
 
 ## Board Spec
 
 ```mermaid
 graph LR
-    PI["Pi 5V Rail<br/>40-pin Header"] --> LDO["AP2112K<br/>3.3V 600mA LDO"]
-    PI --> FLIR["FLIR Lepton 3.5<br/>SPI0 + GPIO25 VSYNC"]
-    PI --> DHT["DHT22<br/>GPIO4 + 10k Pull-up"]
+    SOLAR["Solar Panel<br/>~20W 12V"] --> MPPT["MPPT Charger"]
+    MPPT --> BAT["LiFePO4 4S<br/>~50Wh + BMS"]
+    BAT --> BUCK["Buck<br/>5V 3A"]
+    BUCK --> CM4["CM4 SoM<br/>DF40 x2"]
+    BUCK --> BG["Quectel BG770A<br/>Cat-M1 LCC"]
+    BUCK --> LDO["AP2112K<br/>3.3V LDO"]
     LDO --> ADC["ADS1115<br/>I2C 0x48"]
     LDO --> UV["SI1145<br/>I2C 0x60"]
+    CM4 --> FLIR["FLIR Lepton 3.5<br/>SPI0 + GPIO25"]
+    CM4 --> DHT["DHT22<br/>GPIO4"]
+    CM4 --> ADC
+    CM4 --> UV
     ADC --> RAIN["YL-83<br/>Analog 0-3.3V"]
 
-    style PI fill:#4a9,stroke:#333
+    style SOLAR fill:#dc4,stroke:#333
+    style MPPT fill:#a94,stroke:#333
+    style BAT fill:#a94,stroke:#333
+    style BUCK fill:#a94,stroke:#333
     style LDO fill:#a94,stroke:#333
-    style FLIR fill:#49a,stroke:#333
-    style DHT fill:#94a,stroke:#333
-    style ADC fill:#94a,stroke:#333
-    style UV fill:#94a,stroke:#333
-    style RAIN fill:#669,stroke:#333
+    style CM4 fill:#4a9,stroke:#333,color:#fff
+    style BG fill:#49a,stroke:#333,color:#fff
+    style FLIR fill:#49a,stroke:#333,color:#fff
+    style DHT fill:#94a,stroke:#333,color:#fff
+    style ADC fill:#94a,stroke:#333,color:#fff
+    style UV fill:#94a,stroke:#333,color:#fff
+    style RAIN fill:#669,stroke:#333,color:#fff
 ```
 
-## Pinout
+## CM4 Pinout
 
 ```mermaid
 flowchart LR
@@ -70,63 +85,64 @@ classDef pwr fill:#4a9,stroke:#333,color:#fff
 classDef spi fill:#49a,stroke:#333,color:#fff
 classDef i2c fill:#94a,stroke:#333,color:#fff
 classDef gpio fill:#a94,stroke:#333,color:#fff
-classDef adc fill:#669,stroke:#333,color:#fff
+classDef uart fill:#a49,stroke:#333,color:#fff
+classDef usb fill:#669,stroke:#333,color:#fff
 
-subgraph pi_header ["Pi 40-Pin Header"]
-  pin1["1 · 3V3"]
-  pin2["2 · 5V"]
-  pin3["3 · SDA1"]
-  pin5["5 · SCL1"]
-  pin7["7 · GPIO4"]
-  pin19["19 · SPI0_MOSI"]
-  pin21["21 · SPI0_MISO"]
-  pin22["22 · GPIO25"]
-  pin23["23 · SPI0_SCLK"]
-  pin24["24 · SPI0_CE0"]
+subgraph cm4 ["CM4 (DF40-100)"]
+  p_5v["5V_IN"]
+  p_sda["GPIO2 SDA1"]
+  p_scl["GPIO3 SCL1"]
+  p_g4["GPIO4"]
+  p_g25["GPIO25"]
+  p_mosi["GPIO10 MOSI"]
+  p_miso["GPIO9 MISO"]
+  p_sck["GPIO11 SCLK"]
+  p_ce0["GPIO8 CE0"]
+  p_txd["GPIO14 TXD"]
+  p_rxd["GPIO15 RXD"]
+  p_usb["USB2 D+/D-"]
 end
 
-subgraph sensors ["Sensors"]
+subgraph onboard ["Carrier Components"]
   flir["FLIR Lepton 3.5"]
   dht["DHT22"]
   si["SI1145"]
   ads["ADS1115"]
   yl["YL-83"]
+  bg["BG770A"]
 end
 
-pin2 --> flir
-pin19 --> flir
-pin21 --> flir
-pin23 --> flir
-pin24 --> flir
-pin22 --> flir
-
-pin7 --> dht
-
-pin3 --> si
-pin5 --> si
-
-pin3 --> ads
-pin5 --> ads
+p_mosi --> flir
+p_miso --> flir
+p_sck --> flir
+p_ce0 --> flir
+p_g25 --> flir
+p_g4 --> dht
+p_sda --> si
+p_scl --> si
+p_sda --> ads
+p_scl --> ads
 ads --> yl
+p_txd --> bg
+p_rxd --> bg
+p_usb --> bg
 
-class pin1,pin2 pwr
-class pin19,pin21,pin23,pin24 spi
-class pin3,pin5 i2c
-class pin7,pin22 gpio
-class ads,yl adc
-class flir spi
-class dht gpio
-class si i2c
+class p_5v pwr
+class p_mosi,p_miso,p_sck,p_ce0 spi
+class p_sda,p_scl i2c
+class p_g4,p_g25 gpio
+class p_txd,p_rxd uart
+class p_usb usb
 ```
 
 ## Sensor Interfaces
 
-| Sensor | Interface | Pi Pins | Sample Rate | Measurement | Feeds IEEE 738 Variable |
-|--------|-----------|---------|-------------|-------------|------------------------|
-| FLIR Lepton 3.5 | SPI0 + VSYNC | 19, 21, 23, 24, 22 | 8.6 Hz (frame) | Conductor surface temp | $R_{thermal}$ |
-| DHT22 | GPIO4 (1-Wire) | 7 | 0.5 Hz | Ambient temp + humidity | $T_{amb}$ |
-| SI1145 | I2C (0x60) | 3, 5 | 10 Hz | UV / Visible / IR irradiance | $\Delta T_{solar}$ |
-| YL-83 → ADS1115 | I2C (0x48) ch0 | 3, 5 | 860 SPS | Rain intensity (0–3.3V analog) | $\Delta T_{rain}$ |
+| Sensor | Interface | CM4 Pins | Sample Rate | Measurement | Feeds IEEE 738 Variable |
+|--------|-----------|----------|-------------|-------------|------------------------|
+| FLIR Lepton 3.5 | SPI0 + VSYNC | GPIO 8, 9, 10, 11, 25 | 8.6 Hz (frame) | Conductor surface temp | $R_{thermal}$ |
+| DHT22 | GPIO4 (1-Wire) | GPIO 4 | 0.5 Hz | Ambient temp + humidity | $T_{amb}$ |
+| SI1145 | I2C (0x60) | GPIO 2, 3 | 10 Hz | UV / Visible / IR irradiance | $\Delta T_{solar}$ |
+| YL-83 → ADS1115 | I2C (0x48) ch0 | GPIO 2, 3 | 860 SPS | Rain intensity (0–3.3V analog) | $\Delta T_{rain}$ |
 
 Every sensor reading on this board maps to exactly one term in the IEEE 738 dynamic rating equation:
 
@@ -134,35 +150,35 @@ $$ I_{max} = \sqrt{\frac{q_c + q_r - q_s}{R_{ac}}} $$
 
 ## Power Budget
 
-| Rail | Source | Consumer | Typical | Peak |
-|------|--------|----------|---------|------|
-| 5V | Pi header pin 2 | FLIR Lepton 3.5 | 150 mA | 650 mA (shutter) |
-| 5V | Pi header pin 2 | DHT22 | 1.5 mA | 2.5 mA |
-| 3.3V | AP2112K LDO | ADS1115 | 0.15 mA | 0.2 mA |
-| 3.3V | AP2112K LDO | SI1145 | 3.5 mA | 5.5 mA |
-| 3.3V | AP2112K LDO | YL-83 comparator | 5 mA | 8 mA |
-| | | **Total** | **160 mA** | **666 mA** |
+| Rail | Source | Consumer | Idle (PSM) | Typical | Peak |
+|------|--------|----------|------------|---------|------|
+| 5V | Buck | CM4 | 80 mA | 1400 mA | 3000 mA (boot) |
+| 5V | Buck | Quectel BG770A | <1 mA | 100 mA | 250 mA (TX) |
+| 5V | Buck | FLIR Lepton 3.5 | 150 mA | 150 mA | 650 mA (shutter) |
+| 5V | Buck | DHT22 | 1.5 mA | 1.5 mA | 2.5 mA |
+| 3.3V | AP2112K LDO | ADS1115 + SI1145 + YL-83 | 9 mA | 9 mA | 14 mA |
+| | | **Total @ 5V equiv** | **240 mA** | **1660 mA** | **3920 mA** |
 
-Peak draw is dominated by the Lepton's shutter event (~500ms every 3 minutes). Pi 5V rail supplies up to 1.5A to HATs — 44% headroom at peak.
+Daily energy with realistic CM4-always-on idle + 1/min sensor wake + 1/15 min cellular TX: **~29 Wh/day** (derived in `theory.ipynb`). A 50 Wh battery (90% DoD) gives ~1.6 days autonomy with no PV. A 20W panel at 2.5 sun-hours/day (winter Northeast US worst case) delivers ~45 Wh/day after MPPT η — **1.55x winter margin**, 2.5x annual avg.
 
 ## Environmental
 
 | Parameter | Spec | Notes |
 |-----------|------|-------|
-| Operating temp | -40°C to +85°C | Industrial grade components throughout |
+| Operating temp | -20°C to +85°C | CM4 commercial spec; cold-start heater required below -20°C |
 | Conformal coat | Dow Corning 1-2577 | Applied post-assembly, mask connectors |
 | Enclosure rating | IP55 (with field enclosure) | Board alone is not rated |
 | Vibration | IEC 60068-2-6 (5–500 Hz, 2g) | Transmission tower wind loading |
 | Expected service life | 30 years | Matches conductor replacement cycle |
 | MTBF | >200,000 hours | Derated per MIL-HDBK-217F |
-| Mounting | M2.5 standoffs, Pi HAT spec | 58x23mm hole pattern |
+| Mounting | M3 standoffs, 4-corner | Single rigid PCB — no stack |
 
 ## Fabrication Pipeline
 
 ```
  1. uv run poe notebook         → theory.ipynb: power budget + signal integrity
  2. uv run poe build            → SKiDL netlist + schematic
- 3. uv run poe sim              → validate LDO dropout, I2C rise time, SPI timing
+ 3. uv run poe sim              → validate buck regulation, MPPT, I2C/SPI timing
  4. /generate-schematic         → professional .kicad_sch
 
     ┌──────────────────────────────────────────────────────┐
@@ -183,12 +199,12 @@ Peak draw is dominated by the Lepton's shutter event (~500ms every 3 minutes). P
 
 | Layer | Use |
 |-------|-----|
-| F.Cu | Signal — SPI, I2C, GPIO |
-| In1.Cu | GND pour (unbroken under FLIR) |
-| In2.Cu | 3.3V pour |
-| B.Cu | 5V distribution + Pi header |
+| F.Cu | Signal — high-speed (SPI 20MHz, USB2.0 to BG770A) |
+| In1.Cu | GND pour (unbroken under FLIR + cellular module) |
+| In2.Cu | Power planes — 5V, 3V3, BAT |
+| B.Cu | Signal — low-speed (I2C, GPIO, UART) |
 
-Unbroken ground plane under the Lepton is critical — SPI runs at 20 MHz and the thermal imager is noise-sensitive. Analog traces from YL-83 to ADS1115 are guard-ringed on F.Cu.
+Unbroken ground plane under the Lepton is critical — SPI runs at 20 MHz and the thermal imager is noise-sensitive. USB2.0 to the BG770A is differential-routed at 90Ω matched impedance with GND directly below. Analog traces from YL-83 to ADS1115 are guard-ringed on F.Cu. Cellular antenna is 50Ω microstrip to a u.FL connector.
 
 ## Project Structure
 
@@ -196,14 +212,16 @@ Unbroken ground plane under the Lepton is critical — SPI runs at 20 MHz and th
 ├── pyproject.toml              # Dependencies and build config
 ├── theory.ipynb                # Power budget + signal integrity derivation
 ├── sim/
-│   ├── model.py                # LDO dropout, I2C rise time, SPI timing
+│   ├── model.py                # Buck regulation, LDO dropout, I2C/SPI timing
 │   └── test_run.py             # Assert simulation matches theory
 ├── cad/
 │   ├── netlist/
 │   │   ├── model.py            # Top-level SKiDL circuit
-│   │   ├── power.py            # 5V rail + AP2112K LDO
+│   │   ├── power.py            # MPPT + BMS + buck + LDO
+│   │   ├── som.py              # CM4 DF40 connector + decoupling
+│   │   ├── cellular.py         # BG770A + SIM holder + u.FL
 │   │   ├── sensors.py          # FLIR, DHT22, SI1145, ADS1115, YL-83
-│   │   └── connectors.py       # 40-pin HAT header + sensor headers
+│   │   └── connectors.py       # Solar input + battery + debug
 │   ├── layout_spec.yaml        # Schematic block layout
 │   ├── pcb_placement.yaml      # Component positions
 │   └── drawing-sheet.kicad_wks # Title block
