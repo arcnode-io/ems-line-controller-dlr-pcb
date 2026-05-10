@@ -1,0 +1,375 @@
+(export 
+  (version "D")
+  (design
+    (source "lepton_daughter.py")
+    (date "05/10/2026 04:00 PM")
+    (tool "SKiDL (2.2.1)")
+    (sheet
+      (number 1)
+      (name "/")
+      (tstamps "/")
+      (title_block
+        (title)
+        (company)
+        (rev)
+        (date)
+        (source "../../lepton_daughter.py")
+        (comment
+          (number "1")
+          (value ""))
+        (comment
+          (number "2")
+          (value ""))
+        (comment
+          (number "3")
+          (value ""))
+        (comment
+          (number "4")
+          (value ""))
+        (comment
+          (number "5")
+          (value ""))
+        (comment
+          (number "6")
+          (value ""))
+        (comment
+          (number "7")
+          (value ""))
+        (comment
+          (number "8")
+          (value ""))
+        (comment
+          (number "9")
+          (value "")))))
+  (components
+    (comp
+      (ref "C1")
+      (value "100nF")
+      (description "Unpolarized capacitor")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description") "Unpolarized capacitor")
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "AV2xx1I9Z4")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:48"))
+      (libsource
+        (lib "Device")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "a2f30dda-73f4-565f-bfee-021e00c15957"))
+    (comp
+      (ref "C2")
+      (value "10uF")
+      (description "Unpolarized capacitor")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description") "Unpolarized capacitor")
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "KAIZMIAZVO")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:48"))
+      (libsource
+        (lib "Device")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "0a978adb-9ca2-52f1-b69d-4c20afa408a5"))
+    (comp
+      (ref "J1")
+      (value "FFC_TO_MAIN")
+      (description "Generic connector, single row, 01x14, script generated (kicad-library-utils/schlib/autogen/connector/)")
+      (footprint "Connector_FFC-FPC:Hirose_FH12-14S-0.5SH_1x14-1MP_P0.50mm_Horizontal")
+      (fields
+        (field
+          (name "Description") "Generic connector, single row, 01x14, script generated (kicad-library-utils/schlib/autogen/connector/)")
+        (field
+          (name "Footprint") "Connector_FFC-FPC:Hirose_FH12-14S-0.5SH_1x14-1MP_P0.50mm_Horizontal")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "_wWQEv7uI9")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:73"))
+      (libsource
+        (lib "Connector_Generic")
+        (part "Conn_01x14"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "faa321c9-4df9-59bc-8dae-6d76649fbdcf"))
+    (comp
+      (ref "J2")
+      (value "LEPTON_SOCKET")
+      (description "Generic connector, single row, 01x14, script generated (kicad-library-utils/schlib/autogen/connector/)")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description") "Generic connector, single row, 01x14, script generated (kicad-library-utils/schlib/autogen/connector/)")
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "CWOyrEbsFj")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:94"))
+      (libsource
+        (lib "Connector_Generic")
+        (part "Conn_01x14"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "c5424228-cf59-5978-8eff-a9ccb7606166"))
+    (comp
+      (ref "R1")
+      (value "10k")
+      (description "Resistor")
+      (footprint "Resistor_SMD:R_0402_1005Metric")
+      (fields
+        (field
+          (name "Description") "Resistor")
+        (field
+          (name "Footprint") "Resistor_SMD:R_0402_1005Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "cKavnIyTX_")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:118"))
+      (libsource
+        (lib "Device")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "2922bc4e-2677-5f71-98f0-10ad004906de"))
+    (comp
+      (ref "R2")
+      (value "10k")
+      (description "Resistor")
+      (footprint "Resistor_SMD:R_0402_1005Metric")
+      (fields
+        (field
+          (name "Description") "Resistor")
+        (field
+          (name "Footprint") "Resistor_SMD:R_0402_1005Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "huIxCICQkg")
+        (field
+          (name "SKiDL Line") "lepton_daughter.py:121"))
+      (libsource
+        (lib "Device")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (tstamps "49e02149-66e9-5ebc-bd94-ce56d30dccca")))
+  (nets
+    (net
+      (code 1)
+      (name "3V3")
+      (class "Default")
+      (node
+        (ref "C1")
+        (pin "1")
+        (pintype "PASSIVE"))
+      (node
+        (ref "C2")
+        (pin "1")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J1")
+        (pin "13")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J1")
+        (pin "14")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "13")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "14")
+        (pintype "PASSIVE"))
+      (node
+        (ref "R1")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
+        (ref "R2")
+        (pin "2")
+        (pintype "PASSIVE")))
+    (net
+      (code 2)
+      (name "GND")
+      (class "Default")
+      (node
+        (ref "C1")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
+        (ref "C2")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J1")
+        (pin "1")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J1")
+        (pin "12")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "1")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "12")
+        (pintype "PASSIVE")))
+    (net
+      (code 3)
+      (name "GPIO25_VSYNC")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "6")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "6")
+        (pintype "PASSIVE")))
+    (net
+      (code 4)
+      (name "LEPTON_GPIO3")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "7")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "7")
+        (pintype "PASSIVE")))
+    (net
+      (code 5)
+      (name "LEPTON_PWR_DN_L")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "10")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "10")
+        (pintype "PASSIVE"))
+      (node
+        (ref "R1")
+        (pin "1")
+        (pintype "PASSIVE")))
+    (net
+      (code 6)
+      (name "LEPTON_RESET_L")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "11")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "11")
+        (pintype "PASSIVE"))
+      (node
+        (ref "R2")
+        (pin "1")
+        (pintype "PASSIVE")))
+    (net
+      (code 7)
+      (name "SCL1")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "9")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "9")
+        (pintype "PASSIVE")))
+    (net
+      (code 8)
+      (name "SDA1")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "8")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "8")
+        (pintype "PASSIVE")))
+    (net
+      (code 9)
+      (name "SPI0_CE0")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "2")
+        (pintype "PASSIVE")))
+    (net
+      (code 10)
+      (name "SPI0_MISO")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "4")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "4")
+        (pintype "PASSIVE")))
+    (net
+      (code 11)
+      (name "SPI0_MOSI")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "3")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "3")
+        (pintype "PASSIVE")))
+    (net
+      (code 12)
+      (name "SPI0_SCLK")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "5")
+        (pintype "PASSIVE"))
+      (node
+        (ref "J2")
+        (pin "5")
+        (pintype "PASSIVE")))))
