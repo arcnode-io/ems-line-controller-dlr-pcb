@@ -64,9 +64,12 @@ DAUGHTER_STANDOFF_H_MM: Final[float] = 2.0
 # aim that points the Lepton lens at a conductor below the cross-arm. The
 # bake pipeline can drive this from a parameter to animate the tilt.
 LEPTON_TILT_DEG: Final[float] = -15.0
-# Daughterboard sits above the main carrier J8 position; offset chosen so
-# the marketing render shows the FFC link conceptually between the two.
-DAUGHTER_POS_MM: Final[tuple[float, float, float]] = (-30.0, 0.0, 45.0)
+# Daughterboard sits roughly above the J8 (FFC connector) area on the main
+# PCB. Z chosen so that when the bake hides the bracket/PCB/socket scaffolding
+# the visible Lepton can+lens floats at the same nominal height the old
+# Lepton-on-J8 placement had (PEDESTAL_H above the PCB top surface). The
+# exploded view lifts the whole subassembly further via EXPLODE_Z_MM.
+DAUGHTER_POS_MM: Final[tuple[float, float, float]] = (-50.0, -12.0, -5.1)
 
 # Reason: Z stagger by group — direction-of-installation hint.
 # Power groups lift modestly (board-mounted), connectors and modules lift higher
