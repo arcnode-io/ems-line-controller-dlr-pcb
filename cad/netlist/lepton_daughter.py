@@ -1,6 +1,6 @@
 """Lepton daughterboard — FFC link from main carrier + Lepton mating header.
 
-Per ADR-013: small (~25 × 40 mm) 4-layer PCB that hosts the FLIR Lepton 3.5
+Per ADR-013: small (~25 x 40 mm) 4-layer PCB that hosts the FLIR Lepton 3.5
 module, mounted to a sheet-metal tilt bracket inside the carrier enclosure.
 The lens points down through an IR window in the enclosure floor; tilt is
 set once at integration and locked with Loctite 243.
@@ -70,9 +70,7 @@ def build_netlist() -> None:
     gpio3 = skidl.Net("LEPTON_GPIO3")
 
     # 14-pin FFC connector — mate to main PCB J8 FFC
-    j_ffc = skidl.Part(
-        "Connector_Generic", "Conn_01x14", footprint=FP_FFC_14
-    )
+    j_ffc = skidl.Part("Connector_Generic", "Conn_01x14", footprint=FP_FFC_14)
     j_ffc.value = "FFC_TO_MAIN"
     gnd += j_ffc[1]
     spi_ce0 += j_ffc[2]
@@ -91,9 +89,7 @@ def build_netlist() -> None:
 
     # Lepton mating header — placeholder for the Molex 32-pin socket. PCB
     # layout swaps this to Connector_PinSocket_1.00mm at the time of layout.
-    j_lep = skidl.Part(
-        "Connector_Generic", "Conn_01x14", footprint=FP_HEADER_14
-    )
+    j_lep = skidl.Part("Connector_Generic", "Conn_01x14", footprint=FP_HEADER_14)
     j_lep.value = "LEPTON_SOCKET"
     gnd += j_lep[1]
     spi_ce0 += j_lep[2]
@@ -115,10 +111,14 @@ def build_netlist() -> None:
     _cap("10uF", FP_C_0805, v3v3, gnd)
 
     # Pull-ups for active-low Lepton control lines (PWR_DN_L, RESET_L)
-    r_pdn = skidl.Part("Device", "R", value="10k", footprint="Resistor_SMD:R_0402_1005Metric")
+    r_pdn = skidl.Part(
+        "Device", "R", value="10k", footprint="Resistor_SMD:R_0402_1005Metric"
+    )
     pwr_dn += r_pdn[1]
     v3v3 += r_pdn[2]
-    r_rst = skidl.Part("Device", "R", value="10k", footprint="Resistor_SMD:R_0402_1005Metric")
+    r_rst = skidl.Part(
+        "Device", "R", value="10k", footprint="Resistor_SMD:R_0402_1005Metric"
+    )
     reset_n += r_rst[1]
     v3v3 += r_rst[2]
 
@@ -189,16 +189,21 @@ def build_schematic() -> None:  # noqa: C901
             if label == "GND":
                 sch.components.add("power:GND", pwr_ref(), "GND", position=stub_end)
             elif label == "+3V3":
-                sch.components.add(
-                    "power:+3V3", pwr_ref(), "+3V3", position=stub_end
-                )
+                sch.components.add("power:+3V3", pwr_ref(), "+3V3", position=stub_end)
             else:
                 rot = 180 if sign < 0 else 0
                 sch.add_label(label, position=stub_end, rotation=rot, size=0.8)
 
     # Passives row — each cap/resistor vertical, pin 1 at top, pin 2 at bottom
-    def _place_passive(lib_id: str, ref: str, value: str, footprint: str,
-                       gx: int, top_net: str, bot_net: str) -> None:
+    def _place_passive(
+        lib_id: str,
+        ref: str,
+        value: str,
+        footprint: str,
+        gx: int,
+        top_net: str,
+        bot_net: str,
+    ) -> None:
         comp = sch.components.add(lib_id, ref, value, position=(gx, 100))
         comp.footprint = footprint
         for pin_num, net_label in (("1", top_net), ("2", bot_net)):
@@ -212,9 +217,7 @@ def build_schematic() -> None:  # noqa: C901
             elif net_label == "+3V3":
                 stub_end = (grid[0], grid[1] - 4)
                 sch.add_wire(start=grid, end=stub_end)
-                sch.components.add(
-                    "power:+3V3", pwr_ref(), "+3V3", position=stub_end
-                )
+                sch.components.add("power:+3V3", pwr_ref(), "+3V3", position=stub_end)
             else:
                 # Signal label
                 stub_end = (grid[0], grid[1] + 4)
@@ -226,12 +229,22 @@ def build_schematic() -> None:  # noqa: C901
     _place_passive("Device:C", "C2", "10uF", FP_C_0805, 95, "+3V3", "GND")
     # R1: PWR_DN_L pull-up; R2: RESET_L pull-up
     _place_passive(
-        "Device:R", "R1", "10k", "Resistor_SMD:R_0402_1005Metric",
-        110, "+3V3", "LEPTON_PWR_DN_L",
+        "Device:R",
+        "R1",
+        "10k",
+        "Resistor_SMD:R_0402_1005Metric",
+        110,
+        "+3V3",
+        "LEPTON_PWR_DN_L",
     )
     _place_passive(
-        "Device:R", "R2", "10k", "Resistor_SMD:R_0402_1005Metric",
-        125, "+3V3", "LEPTON_RESET_L",
+        "Device:R",
+        "R2",
+        "10k",
+        "Resistor_SMD:R_0402_1005Metric",
+        125,
+        "+3V3",
+        "LEPTON_RESET_L",
     )
 
     # PWR_FLAGs on +3V3 and GND — this board has no native power source; flags
@@ -246,7 +259,9 @@ def build_schematic() -> None:  # noqa: C901
         flg_y = pwr_y - 8 + ((pwr_y - 8) % 4 - residue) * -1
         flg_y = pwr_y - 8 - ((pwr_y - 8) % 4 - residue) % 4
         sch.components.add(sym, pwr_ref(), net, position=(x, pwr_y))
-        sch.components.add("power:PWR_FLAG", f"#FLG{i+1:03d}", "PWR_FLAG", position=(x, flg_y))
+        sch.components.add(
+            "power:PWR_FLAG", f"#FLG{i+1:03d}", "PWR_FLAG", position=(x, flg_y)
+        )
         sch.add_wire(start=(x, pwr_y), end=(x, flg_y))
 
     sch.save_as(str(SCHEMATIC_PATH))
@@ -255,10 +270,10 @@ def build_schematic() -> None:  # noqa: C901
 def write_kicad_project() -> None:
     """Write a minimal kicad_pro file pointing at the schematic + (future) PCB."""
     PROJECT_PATH.write_text(
-        '{\n'
+        "{\n"
         '  "meta": {"filename": "lepton_daughter.kicad_pro", "version": 1},\n'
         '  "schematic": {"legacy_lib_dir": "", "legacy_lib_list": []}\n'
-        '}\n'
+        "}\n"
     )
 
 
