@@ -49,3 +49,6 @@ fp-info-cache
 *-erc.rpt
 *-drc.rpt
 .claude/settings.local.json
+
+# Brainstorming visual companion (per-session screens)
+.superpowers/
