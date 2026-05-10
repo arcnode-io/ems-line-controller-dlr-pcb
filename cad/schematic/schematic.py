@@ -337,11 +337,16 @@ def _place_block(sch, block_components: list[dict], region: dict) -> dict:
         cols, cw, ch = _grid_for_block(n, w, rest_h)
         for i, comp in enumerate(rest):
             row, col = divmod(i, cols)
-            gx = ox + col * cw + cw // 2
-            # Reason: per-column y-stagger so adjacent same-type components (e.g.
-            # two decoupling caps with mirror-pin layouts) don't share pin y's,
-            # which would trigger KiCad ERC's y-coincidence false-merge bug.
-            gy = rest_oy + row * ch + ch // 2 + col
+            # Per-component (dx, dy) hash jitter breaks x- and y-coincidence
+            # across the whole schematic. KiCad ERC falsely merges nets when
+            # any two wires share an x or y, so wide entropy is needed to avoid
+            # cascade merges. Prime moduli (17, 23) reduce structured collisions
+            # vs round moduli that align with pin offsets like 2.54/3.81/5.08.
+            h = abs(hash(comp["ref"]))
+            dx = h % 17
+            dy = (h // 17) % 23
+            gx = ox + col * cw + cw // 2 + dx
+            gy = rest_oy + row * ch + ch // 2 + dy
             placed[comp["ref"]] = _place_one(sch, comp, gx, gy)
     return placed
 
@@ -438,9 +443,9 @@ def _route_pin(sch, comp, pin_num: str, net_name: str, pwr: PwrCounter) -> None:
     stub_len = 8 if (dx > 0 or dy > 0) else 4
 
     if net_name in POWER_SYMBOL_BY_NET:
-        # Snap the power-symbol y to a per-net mod-4 residue. Guarantees no two
-        # different power nets ever share a y-coordinate anywhere on the sheet,
-        # which is what KiCad ERC's y-coincidence bug uses to false-merge nets.
+        # Snap the power-symbol y to a per-net mod-4 residue so distinct power
+        # nets never share a y-coordinate anywhere on the sheet (KiCad ERC's
+        # y-coincidence bug uses that to false-merge nets).
         rail_offset = {"GND": 0, "5V_RAIL": 0, "3V3": 2}.get(net_name, 0)
         sym = POWER_SYMBOL_BY_NET[net_name]
         if net_name == "GND":
