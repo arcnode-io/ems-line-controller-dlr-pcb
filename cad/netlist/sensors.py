@@ -47,12 +47,28 @@ def build_flir_lepton(
     spi_ce0: skidl.Net,
     vsync: skidl.Net,
 ) -> None:
-    """FLIR Lepton 3.5 thermal imager — 14-pin GroupGets breakout pinout.
+    """FLIR Lepton 3.5 SPI/I2C link via 14-pin FFC to off-board daughterboard.
+
+    Per ADR-013: Lepton mounts on a separate daughterboard so its lens can be
+    aimed at the conductor below the cross-arm independently of the main PCB.
+    This function adds the Hirose FH12-14S-0.5SH FFC connector on the main
+    carrier; the daughterboard (separate KiCad project under cad/lepton_daughter/)
+    hosts the Molex 32-pin Lepton socket.
+
+    Pin map preserves the GroupGets 14-pin breakout signal order so the same
+    Lepton breakout schematic is reusable on the daughterboard.
 
     1=GND  2=CS   3=MOSI  4=MISO  5=SCK   6=VSYNC  7=GPIO3
     8=SDA  9=SCL  10=PWR_DN_L  11=RESET_L  12=GND  13=3V3  14=VIN
     """
-    j = _module_header(14, "FLIR_LEPTON")
+    j = skidl.Part(
+        "Connector_Generic",
+        "Conn_01x14",
+        footprint=(
+            "Connector_FFC-FPC:" "Hirose_FH12-14S-0.5SH_1x14-1MP_P0.50mm_Horizontal"
+        ),
+    )
+    j.value = "FLIR_LEPTON_FFC"
     gnd += j[1]
     spi_ce0 += j[2]
     spi_mosi += j[3]
@@ -62,12 +78,12 @@ def build_flir_lepton(
     skidl.Net("LEPTON_GPIO3") & j[7]
     sda += j[8]
     scl += j[9]
-    # PWR_DN_L and RESET_L pulled high (not actively driven from carrier)
+    # PWR_DN_L and RESET_L pulled high through FFC (active-low, default-deasserted)
     _res("10k", FP_R_0402, j[10], v3v3)
     _res("10k", FP_R_0402, j[11], v3v3)
     gnd += j[12]
     v3v3 += j[13]
-    v3v3 += j[14]  # VIN tied to 3V3 (Lepton breakout has internal LDO)
+    v3v3 += j[14]  # VIN tied to 3V3 (daughterboard powered from main 3V3 rail)
     _cap("100nF", FP_C_0402, v3v3, gnd)
 
 

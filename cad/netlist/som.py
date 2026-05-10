@@ -25,6 +25,8 @@ def build_cm4(
     cell_en: skidl.Net,
     usb_dp: skidl.Net,
     usb_dm: skidl.Net,
+    cmsn_dp: skidl.Net,
+    cmsn_dm: skidl.Net,
     pwrkey: skidl.Net,
     reset_n: skidl.Net,
     status: skidl.Net,
@@ -88,6 +90,12 @@ def build_cm4(
     usb_dp += j_cm4[27]
     usb_dm += j_cm4[28]
 
+    # USB2 OTG → commissioning USB-C port (ADR-013)
+    # Placeholder pins; real CM4 J1 has a separate OTG pair, exposed via the
+    # custom DF40-100 footprint at PCB layout time.
+    cmsn_dp += j_cm4[36]
+    cmsn_dm += j_cm4[37]
+
     # 4x 100nF decoupling near connector
     for _ in range(4):
         c = skidl.Part(
@@ -100,5 +108,5 @@ def build_cm4(
         gnd += c[2]
 
     # Truly unused pins
-    for pin in (12, 26, 31, 35, 36, 37, 38, 40):
+    for pin in (12, 26, 31, 35, 38, 40):
         skidl.Net(f"NC_CM4_{pin}") & j_cm4[pin]

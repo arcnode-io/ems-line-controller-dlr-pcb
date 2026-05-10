@@ -4,7 +4,7 @@ Wires power chain (solar -> MPPT -> battery -> buck -> LDOs) to:
   - CM4 SoM (som.py)
   - Cellular interface (cellular.py): BG770A + TXS0108E + u.FL
   - IEEE 738 sensors (sensors.py): FLIR + DHT22 + SI1145 + ADS1115/YL-83
-  - Off-board connectors (connectors.py): battery + debug UART
+  - Off-board connectors (connectors.py): battery + debug UART + USB-C commissioning
 """
 
 import os
@@ -24,6 +24,7 @@ import skidl  # noqa: E402
 from cad.netlist.cellular import build_cellular  # noqa: E402
 from cad.netlist.connectors import (  # noqa: E402
     build_battery_connector,
+    build_commissioning_usbc,
     build_debug_header,
 )
 from cad.netlist.power import (  # noqa: E402
@@ -63,6 +64,9 @@ def build_netlist() -> None:
     cell_en = skidl.Net("CELL_EN")
     usb_dp = skidl.Net("USB_DP")
     usb_dm = skidl.Net("USB_DM")
+    # Reason: second USB pair from CM4 J1 OTG → sealed commissioning port (ADR-013)
+    cmsn_dp = skidl.Net("USB_CMSN_DP")
+    cmsn_dm = skidl.Net("USB_CMSN_DM")
     pwrkey = skidl.Net("CELL_PWRKEY")
     reset_n = skidl.Net("CELL_RESET")
     status = skidl.Net("CELL_STATUS")
@@ -97,6 +101,8 @@ def build_netlist() -> None:
         cell_en=cell_en,
         usb_dp=usb_dp,
         usb_dm=usb_dm,
+        cmsn_dp=cmsn_dp,
+        cmsn_dm=cmsn_dm,
         pwrkey=pwrkey,
         reset_n=reset_n,
         status=status,
@@ -132,6 +138,9 @@ def build_netlist() -> None:
         gpio25=gpio25,
     )
     build_debug_header(v3v3, gnd, dbg_tx, dbg_rx)
+    # Commissioning USB-C — sealed industrial port for live thermal preview
+    # during integrator aim of the Lepton daughterboard tilt (ADR-013)
+    build_commissioning_usbc(gnd, cmsn_dp, cmsn_dm)
 
     skidl.generate_netlist(file_=NETLIST_PATH, tool=skidl.KICAD8)
 

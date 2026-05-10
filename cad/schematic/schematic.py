@@ -34,6 +34,7 @@ LIB_BY_PART: Final = {
     "TXS0108EPW": "Logic_LevelTranslator",
     "ADS1115IDGS": "Analog_ADC",
     "DHT11": "Sensor",
+    "USB_C_Receptacle_USB2.0_14P": "Connector",
 }
 
 # Component value -> block (catches all uniquely-named ICs and connectors)
@@ -54,6 +55,7 @@ VALUE_TO_BLOCK: Final = {
     "SIM": "cellular",
     # sensors
     "FLIR_LEPTON": "sensors",
+    "FLIR_LEPTON_FFC": "sensors",
     "DHT22": "sensors",
     "SI1145": "sensors",
     "YL-83": "sensors",
@@ -61,6 +63,7 @@ VALUE_TO_BLOCK: Final = {
     # connectors
     "BAT": "connectors",
     "DEBUG_UART": "connectors",
+    "USBC_COMMISSIONING": "connectors",
 }
 
 # Block-specific nets (for classifying passives that don't have unique values)
@@ -106,6 +109,24 @@ POWER_SYMBOL_BY_NET: Final = {
     "5V_RAIL": "power:+5V",
     "3V3": "power:+3V3",
 }
+
+
+def _real_pin_position(comp, pin_num: str):
+    """Pin position in sheet coords, fixing kicad-sch-api's y-inversion bug.
+
+    kicad-sch-api computes pin_y = sym_y + pin_offset_y, but KiCad's actual
+    rendering uses pin_y = sym_y - pin_offset_y (symbol coords are +y up,
+    sheet coords are +y down). Reflect ksa's reported y around sym_y to get
+    the position KiCad will actually draw the pin at.
+
+    Only valid for unrotated symbols (rotation=0). All components produced
+    by _place_one are placed unrotated, so this assumption holds.
+    """
+    pos = comp.get_pin_position(pin_num)
+    if not pos:
+        return None
+    sym_y = comp.position.y
+    return type(pos)(pos.x, 2 * sym_y - pos.y)
 
 
 def _resolve_lib(part_name: str) -> str:
@@ -180,6 +201,8 @@ def _parse_netlist(path: Path) -> tuple[list[dict], list[dict]]:  # noqa: C901
                         node["ref"] = sub[1]
                     elif s(sub) == "pin":
                         node["pin"] = sub[1]
+                    elif s(sub) == "pintype":
+                        node["pintype"] = sub[1]
                 if node:
                     info["nodes"].append(node)
         if info["name"]:
@@ -315,7 +338,10 @@ def _place_block(sch, block_components: list[dict], region: dict) -> dict:
         for i, comp in enumerate(rest):
             row, col = divmod(i, cols)
             gx = ox + col * cw + cw // 2
-            gy = rest_oy + row * ch + ch // 2
+            # Reason: per-column y-stagger so adjacent same-type components (e.g.
+            # two decoupling caps with mirror-pin layouts) don't share pin y's,
+            # which would trigger KiCad ERC's y-coincidence false-merge bug.
+            gy = rest_oy + row * ch + ch // 2 + col
             placed[comp["ref"]] = _place_one(sch, comp, gx, gy)
     return placed
 
@@ -373,10 +399,27 @@ def _net_jitter(net_name: str) -> tuple[int, int]:
     return (h % 3, (h // 3) % 3)
 
 
+NET_Y_MOD: Final = {"GND": 0, "5V_RAIL": 1, "3V3": 2}
+
+
+def _power_symbol_y(net_name: str, base_y: int) -> int:
+    """Snap a power symbol's y to a unique-per-net residue mod 4.
+
+    KiCad ERC falsely merges nets when any two of their pins/symbols share
+    a y-coordinate (anywhere on the sheet — not just adjacent). Forcing each
+    net's symbols to land on a distinct y-mod-4 residue guarantees that two
+    *different* power nets can never produce a pin at the same y, so the
+    cross-net cascade can't trigger. Same-net symbols may share y, which is
+    fine because they're supposed to be on the same net anyway.
+    """
+    target = NET_Y_MOD.get(net_name, 3)
+    return base_y - (base_y % 4) + target
+
+
 def _route_pin(sch, comp, pin_num: str, net_name: str, pwr: PwrCounter) -> None:
     """Stub a single pin — power symbol for power nets, NC marker for NC_*, label otherwise."""
     try:
-        pin_pos_mm = comp.get_pin_position(pin_num)
+        pin_pos_mm = _real_pin_position(comp, pin_num)
     except Exception:
         return
     if not pin_pos_mm:
@@ -395,14 +438,16 @@ def _route_pin(sch, comp, pin_num: str, net_name: str, pwr: PwrCounter) -> None:
     stub_len = 8 if (dx > 0 or dy > 0) else 4
 
     if net_name in POWER_SYMBOL_BY_NET:
-        # Per-net y-offset so different power rails on the same component row
-        # don't land at the same y (avoids kicad's coincidence false-merge).
+        # Snap the power-symbol y to a per-net mod-4 residue. Guarantees no two
+        # different power nets ever share a y-coordinate anywhere on the sheet,
+        # which is what KiCad ERC's y-coincidence bug uses to false-merge nets.
         rail_offset = {"GND": 0, "5V_RAIL": 0, "3V3": 2}.get(net_name, 0)
         sym = POWER_SYMBOL_BY_NET[net_name]
         if net_name == "GND":
-            end = (pin_grid[0], pin_grid[1] + stub_len + rail_offset)
+            base_y = pin_grid[1] + stub_len + rail_offset
         else:
-            end = (pin_grid[0], pin_grid[1] - stub_len - rail_offset)
+            base_y = pin_grid[1] - stub_len - rail_offset
+        end = (pin_grid[0], _power_symbol_y(net_name, base_y))
         with contextlib.suppress(Exception):
             sch.add_wire(start=pin_grid, end=end)
             sch.components.add(sym, pwr.pwr_ref(), sym.split(":")[-1], position=end)
@@ -427,7 +472,7 @@ def _route_pin(sch, comp, pin_num: str, net_name: str, pwr: PwrCounter) -> None:
 def _add_nc_at_pin(sch, comp, pin_num: str) -> None:
     """Place a no-connect marker at a component pin (mm coords)."""
     try:
-        pos_mm = comp.get_pin_position(pin_num)
+        pos_mm = _real_pin_position(comp, pin_num)
     except Exception:
         return
     if not pos_mm:
@@ -447,15 +492,20 @@ def _place_pwr_flags(sch, pwr: PwrCounter, nets_used: set[str]) -> None:
         sym = POWER_SYMBOL_BY_NET.get(net_name)
         if not sym:
             continue
-        # Diagonal stagger: each flag gets unique x and unique y
+        # Each PWR + FLG pair lands on the per-net mod-4 residue (same as inline
+        # power-symbol routing) so the FLAG bank can't y-coincide with any other
+        # power symbol on the sheet. Wire must be axis-aligned (KiCad treats
+        # diagonals as graphics, not connections).
         x = 40 + i * 30
-        y = 25 + i * 4
+        y_base = 28 + i * 4
+        y = _power_symbol_y(net_name, y_base)
+        flg_y = _power_symbol_y(net_name, y - 8)  # FLG below PWR, same residue
         with contextlib.suppress(Exception):
             sch.components.add(sym, pwr.pwr_ref(), sym.split(":")[-1], position=(x, y))
             sch.components.add(
-                "power:PWR_FLAG", pwr.flg_ref(), "PWR_FLAG", position=(x + 5, y + 1)
+                "power:PWR_FLAG", pwr.flg_ref(), "PWR_FLAG", position=(x, flg_y)
             )
-            sch.add_wire(start=(x, y), end=(x + 5, y + 1))
+            sch.add_wire(start=(x, y), end=(x, flg_y))
 
 
 def _route_explicit_nets(
@@ -483,18 +533,17 @@ def _route_explicit_nets(
 
 
 def _add_orphan_no_connects(sch, placed: dict, routed: set[tuple[str, str]]) -> None:
-    """Mark every un-routed pin as no-connect, except multi-unit symbols.
+    """Mark every un-routed pin as no-connect.
 
-    Reason: kicad-sch-api only graphically places unit 1 of multi-unit symbols
-    (e.g. BG95-M1 has 102 pins across 7+ units), so NCs for non-unit-1 pins
-    land at bogus coordinates and overlap visible labels.
+    Now that pin positions are computed correctly (via _real_pin_position with
+    the y-inversion fix), large parts like BG95-M1 (102 pins, single-unit) work
+    fine here too. The earlier >30 pin skip was a workaround for the y-inversion
+    bug that's now fixed.
     """
     for ref, comp in placed.items():
         try:
             pins = comp.list_pins()
         except Exception:
-            continue
-        if len(pins) > 30:
             continue
         for pin in pins:
             num = pin["number"]
@@ -502,11 +551,28 @@ def _add_orphan_no_connects(sch, placed: dict, routed: set[tuple[str, str]]) -> 
                 _add_nc_at_pin(sch, comp, num)
 
 
+def _power_driven_nets(nets: list[dict]) -> set[str]:
+    """Power nets that already have a Power-output driver (regulator output).
+
+    A PWR_FLAG on such a net would conflict with the driver — ERC sees two
+    Power-output pins on one net and reports pin_to_pin. Skip them.
+    """
+    driven: set[str] = set()
+    for net in nets:
+        for node in net["nodes"]:
+            ptype = node.get("pintype", "").upper().replace("_", "-")
+            if "POWER-OUT" in ptype:
+                driven.add(net["name"])
+                break
+    return driven
+
+
 def _label_pins(sch, placed: dict, nets: list[dict]) -> None:
     pwr = PwrCounter()
     routed, pwr_nets_used = _route_explicit_nets(sch, placed, nets, pwr)
     _add_orphan_no_connects(sch, placed, routed)
-    _place_pwr_flags(sch, pwr, pwr_nets_used)
+    flag_nets = pwr_nets_used - _power_driven_nets(nets)
+    _place_pwr_flags(sch, pwr, flag_nets)
 
 
 def build_schematic() -> None:
