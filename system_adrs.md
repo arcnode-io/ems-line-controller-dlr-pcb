@@ -18,6 +18,7 @@ Captures architectural and component decisions for the EMS Line Controller DLR P
 | 010 | BG770A 3.8V LDO — TI LP5907 | Component |
 | 011 | Level shifter — TI TXS0108E | Component |
 | 012 | u.FL connector — Hirose U.FL-R-SMT-1(10) | Component |
+| 013 | Lepton daughterboard for aim flexibility | Architecture |
 
 ---
 
@@ -349,3 +350,33 @@ Hirose is the canonical industry u.FL — every cellular module reference design
 - 50Ω microstrip from BG770A ANT → Pi-network → u.FL center pin
 - u.FL placed near board edge for pigtail clearance + 10×10mm keepout for cable bend radius
 - Off-board accessories (pigtail + N-female bulkhead + blade antenna) specified at integration, not PCB design
+
+---
+
+## ADR-013: Lepton Daughterboard for Aim Flexibility
+
+**Status:** Accepted **Date:** 2026-05-10
+
+### Context
+ADR-001 mandated a single-PCB carrier with all sensor, cellular, and power-management circuitry on one board, motivated by stacked-Pi-HAT vibration failures over 30-yr deployments. Cross-arm DLR deployment requires the FLIR Lepton 3.5 lens to aim at a conductor ~1.5 m below the cross-arm; with a sky-facing solar panel constraint and the lens perpendicular to the main PCB, no monolithic-board orientation satisfies both.
+
+### Decision
+Split the Lepton onto a small (~25 × 40 mm) daughterboard linked to the main PCB by a 14-pin 0.5 mm-pitch FFC. Daughterboard mounts to a sheet-metal bracket with M3 pivot + M3 arc-slot lock, allowing ±15° aim adjustment at integration time. Sealed industrial USB-C commissioning port on the main carrier provides live thermal preview to a laptop while the integrator sets aim.
+
+### Rationale
+ADR-001's spirit was to avoid stacked compute (Pi 5 HAT). A passive sensor daughterboard with no active electronics beyond the Lepton socket and decoupling is not the failure class ADR-001 was guarding against. The daughterboard inherits the 30-yr robustness of the main carrier (same conformal coat, same enclosure, same potting) and adds no compute.
+
+### Alternatives Considered
+| Option | Tradeoff |
+|---|---|
+| Lens out the side via vertical PCB | CM4 + cellular re-layout, vibration cantilever, antenna re-route. Overkill for an optical aim problem. |
+| 45° gold folding mirror inside enclosure | Field-degradation: dust, condensation, ice, biofilm. Mirror-axis drift over 30 yrs. |
+| Right-angle Lepton breakout (commercial) | Locks us to a specific vendor SKU with EOL risk; still needs a daughterboard or adapter. |
+| GroupGets Lepton breakout as the daughterboard | Pre-designed, but vendor EOL risk over 30 yrs and no native FFC connection — adapter board still needed. |
+
+### Consequences
+- Two PCBs in the project: `cad/dlr_carrier.*` (main) and `cad/lepton_daughter/*` (new). Two KiCad projects, two BOM/CPL files, two Gerber sets to fab; ~+$15 marginal fab cost per unit at low volume.
+- J8 footprint on main PCB changes from a 14-pin 2.54 mm THT header to a Hirose FH12-14S-0.5SH FFC connector. Pin map preserves the GroupGets 14-pin Lepton breakout signal order so the schematic on the daughterboard is reusable.
+- Aim is set once at integration with lockwasher + Loctite 243; no field-accessible knob (an external knob would be an IP55 / O-ring / corrosion-over-30-yrs liability).
+- Sealed industrial USB-C commissioning port (J12) is mandatory — without it the integrator can't see the live thermal frame to set aim.
+- ADR-001 retains force for compute and the bulk of sensor / power circuitry; ADR-013 is a scoped exception covering only the Lepton optical chain.

@@ -175,11 +175,13 @@ Daily energy with realistic CM4-always-on idle + 1/min sensor wake + 1/15 min ce
 
 ## Fabrication Pipeline
 
+The project fabricates **two PCBs** (per ADR-013): the main carrier and the Lepton daughterboard. Both go through the same flow.
+
 ```
  1. uv run poe notebook         → theory.ipynb: power budget + signal integrity
- 2. uv run poe build            → SKiDL netlist + schematic
+ 2. uv run poe build            → SKiDL netlist (main carrier + daughterboard)
  3. uv run poe sim              → validate buck regulation, MPPT, I2C/SPI timing
- 4. /generate-schematic         → professional .kicad_sch
+ 4. /generate-schematic         → professional .kicad_sch (each PCB)
 
     ┌──────────────────────────────────────────────────────┐
     │  HUMAN: open pcbnew, import netlist, save, close     │
@@ -192,7 +194,7 @@ Daily energy with realistic CM4-always-on idle + 1/min sensor wake + 1/15 min ce
     └──────────────────────────────────────────────────────┘
 
  6. uv run poe validate-asm     → DRC 0 errors
- 7. uv run poe generate-asm     → gerbers + BOM + CPL
+ 7. uv run poe generate-asm     → gerbers + BOM + CPL (per board)
 ```
 
 ## Layer Stack
@@ -216,14 +218,18 @@ Unbroken ground plane under the Lepton is critical — SPI runs at 20 MHz and th
 │   └── test_run.py             # Assert simulation matches theory
 ├── cad/
 │   ├── netlist/
-│   │   ├── model.py            # Top-level SKiDL circuit
+│   │   ├── model.py            # Top-level SKiDL circuit (main carrier)
 │   │   ├── power.py            # MPPT + BMS + buck + LDO
 │   │   ├── som.py              # CM4 DF40 connector + decoupling
 │   │   ├── cellular.py         # BG770A + SIM holder + u.FL
-│   │   ├── sensors.py          # FLIR, DHT22, SI1145, ADS1115, YL-83
-│   │   └── connectors.py       # Solar input + battery + debug
+│   │   ├── sensors.py          # FLIR (FFC), DHT22, SI1145, ADS1115, YL-83
+│   │   ├── connectors.py       # Battery + debug + USB-C commissioning
+│   │   └── lepton_daughter.py  # Daughterboard SKiDL (Molex socket + FFC)
+│   ├── lepton_daughter/        # Second PCB (per ADR-013) — Lepton + bracket
+│   ├── schematic/              # /generate-schematic output
+│   ├── assembly/               # CadQuery → GLB pipeline (build_assembly.py)
 │   ├── layout_spec.yaml        # Schematic block layout
-│   ├── pcb_placement.yaml      # Component positions
+│   ├── pcb_placement.yaml      # Main-PCB component positions
 │   └── drawing-sheet.kicad_wks # Title block
 ├── output/
 │   ├── drawings/               # Schematic SVG + PDF
