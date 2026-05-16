@@ -10,7 +10,7 @@ import pcbnew
 import yaml
 
 PLACEMENT_FILE = Path("cad/pcb_placement.yaml")
-PCB_PATH = Path("cad/cm4_carrier.kicad_pcb")
+PCB_PATH = Path("cad/dlr_carrier.kicad_pcb")
 
 
 def place_footprints() -> None:

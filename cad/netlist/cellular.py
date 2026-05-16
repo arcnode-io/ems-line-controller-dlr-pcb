@@ -123,7 +123,7 @@ def build_cellular(
     j_sim = skidl.Part(
         "Connector",
         "SIM_Card",
-        footprint="Connector_JAE:JAE_SIM_Card_SF72S006",
+        footprint="Connector_Card:microSIM_JAE_SF53S006VCBR2000",
     )
     j_sim.value = "SIM"
     # Wire SIM — kicad SIM_Card pin names: VCC, RST, CLK, GND, VPP, I/O
