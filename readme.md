@@ -1,12 +1,12 @@
-# EMS Line Controller DLR PCB 🌡️⚡
+# DLR PCB 🌡️⚡
 
-![](https://img.shields.io/gitlab/pipeline-status/arcnode-io/ems-line-controller-dlr-pcb?branch=main&logo=gitlab)
-![](https://gitlab.com/arcnode-io/ems-line-controller-dlr-pcb/badges/main/coverage.svg)
+![](https://img.shields.io/gitlab/pipeline-status/arcnode-io/dlr-pcb?branch=main&logo=gitlab)
+![](https://gitlab.com/arcnode-io/dlr-pcb/badges/main/coverage.svg)
 ![](https://img.shields.io/badge/3.13-gray?logo=python)
 ![](https://img.shields.io/badge/cad-kicad-314CB0)
 ![](https://img.shields.io/badge/material-FR4_1.6mm_4L-gray)
 
-> Single-PCB CM4 carrier for a solar-powered, cellular-connected RTU — mounts to a transmission tower cross-arm, integrates SoM + cellular modem + IEEE 738 sensor suite + solar/LiFePO4 power management. Feeds [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr).
+> Single-PCB CM4 carrier for a solar-powered, cellular-connected RTU — mounts to a transmission tower cross-arm, integrates SoM + cellular modem + IEEE 738 sensor suite + solar/LiFePO4 power management. Feeds [`dlr-utility-envelope`](https://gitlab.com/arcnode-io/dlr-utility-envelope).
 
 Solar-powered remote terminal unit (RTU) deployed unattended on transmission tower cross-arms. A ~20W solar panel and ~50Wh LiFePO4 battery keep the CM4 running indefinitely with cellular PSM idle. A soldered Quectel BG770A (LTE Cat-M1) publishes sensor data and dynamic ratings to the MQTT broker — no site WiFi or wired backhaul required. The unit is designed for 30-year conductor-adjacent deployment with no scheduled maintenance.
 
@@ -30,7 +30,7 @@ rectangle transmission_tower {
 }
 
 queue mqtt_broker
-rectangle line_controller_pst
+rectangle dlr_pst_sim
 
 solar_panel -d- power_mgmt: PV input
 power_mgmt -l- lifepo4_battery: charge / discharge
@@ -39,10 +39,10 @@ conductor -u- sensors: thermal view\n(FLIR Lepton)
 sensors -r- cm4_som: SPI / I2C / GPIO
 cm4_som -r- cellular_module: UART + USB2
 cellular_module -r- mqtt_broker: LTE Cat-M1
-mqtt_broker -r- line_controller_pst: tap \n adjustment \n commands
+mqtt_broker -r- dlr_pst_sim: tap \n adjustment \n commands
 ```
 
-The carrier is the physical sensing + edge-compute layer of the DLR feedback loop. Every measurement flows through the IEEE 738 calculation in [`ems-line-controller-dlr`](https://gitlab.com/arcnode-io/ems-line-controller-dlr) and ultimately determines whether the phase shift transformer adjusts its tap position.
+The carrier is the physical sensing + edge-compute layer of the DLR feedback loop. Every measurement flows through the IEEE 738 calculation in [`dlr-utility-envelope`](https://gitlab.com/arcnode-io/dlr-utility-envelope) and ultimately determines whether the phase shift transformer adjusts its tap position.
 
 ## Board Spec
 

@@ -1,5 +1,5 @@
 [project]
-name = "ems-line-controller-dlr-pcb"
+name = "dlr-pcb"
 version = "1.0.0-beta"
 requires-python = "==3.13.2"
 dependencies = [

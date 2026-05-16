@@ -1,6 +1,6 @@
 # DLR Carrier Board — Architecture Decision Records
 
-Captures architectural and component decisions for the EMS Line Controller DLR PCB. New decisions append as ADR-NNN; supersedes are explicit. Date format ISO 8601.
+Captures architectural and component decisions for the DLR PCB. New decisions append as ADR-NNN; supersedes are explicit. Date format ISO 8601.
 
 ## Index
 

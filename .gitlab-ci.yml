@@ -28,6 +28,6 @@ mirror:
     GIT_DEPTH: 0
   script:
     - git checkout -B main
-    - git push --mirror git@github.com:arcnode-io/ems-line-controller-dlr-pcb.git
+    - git push --mirror git@github.com:arcnode-io/dlr-pcb.git
   only:
     - main
