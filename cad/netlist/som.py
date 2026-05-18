@@ -34,6 +34,9 @@ def build_cm4(
     shifter_oe: skidl.Net,
     dbg_tx: skidl.Net,
     dbg_rx: skidl.Net,
+    anemo_uart_tx: skidl.Net,
+    anemo_uart_rx: skidl.Net,
+    anemo_de_n: skidl.Net,
 ) -> None:
     """Wire CM4 J2 (GPIO/UART/I2C/SPI/USB2) to the carrier.
 
@@ -86,9 +89,14 @@ def build_cm4(
     spi_sck += j_cm4[23]  # GPIO11 / SCLK
     spi_ce0 += j_cm4[24]  # GPIO8 / CE0
 
+    # UART2 to anemometer RS-485 transceiver (dtoverlay=uart2 maps to GPIO0/1)
+    anemo_uart_tx += j_cm4[27]  # GPIO0 / TXD2
+    anemo_uart_rx += j_cm4[28]  # GPIO1 / RXD2
+    anemo_de_n += j_cm4[31]  # GPIO6 — SP3485EN DE/~RE direction control
+
     # USB2 to BG770A — placeholder pins (real CM4 USB lives on J1, not GPIO header)
-    usb_dp += j_cm4[27]
-    usb_dm += j_cm4[28]
+    usb_dp += j_cm4[38]
+    usb_dm += j_cm4[40]
 
     # USB2 OTG → commissioning USB-C port (ADR-013)
     # Placeholder pins; real CM4 J1 has a separate OTG pair, exposed via the

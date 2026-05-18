@@ -21,6 +21,7 @@ for v in (
 
 import skidl  # noqa: E402
 
+from cad.netlist.anemometer import build_anemometer  # noqa: E402
 from cad.netlist.cellular import build_cellular  # noqa: E402
 from cad.netlist.connectors import (  # noqa: E402
     build_battery_connector,
@@ -74,6 +75,9 @@ def build_netlist() -> None:
     shifter_oe = skidl.Net("SHIFTER_OE")
     dbg_tx = skidl.Net("DBG_TX")
     dbg_rx = skidl.Net("DBG_RX")
+    anemo_uart_tx = skidl.Net("ANEMO_UART_TX")
+    anemo_uart_rx = skidl.Net("ANEMO_UART_RX")
+    anemo_de_n = skidl.Net("ANEMO_DE")
 
     # Power chain
     build_solar_input(pv_in, gnd)
@@ -110,6 +114,9 @@ def build_netlist() -> None:
         shifter_oe=shifter_oe,
         dbg_tx=dbg_tx,
         dbg_rx=dbg_rx,
+        anemo_uart_tx=anemo_uart_tx,
+        anemo_uart_rx=anemo_uart_rx,
+        anemo_de_n=anemo_de_n,
     )
     build_cellular(
         v3v8=v3v8,
@@ -141,6 +148,17 @@ def build_netlist() -> None:
     # Commissioning USB-C — sealed industrial port for live thermal preview
     # during integrator aim of the Lepton daughterboard tilt (ADR-013)
     build_commissioning_usbc(gnd, cmsn_dp, cmsn_dm)
+    # Anemometer RS-485 — sensor-agnostic port. UART2 on GPIO0/1 (CM4
+    # dtoverlay=uart2), DE on GPIO6. Supports high-wind (Calypso ULP STD)
+    # and low-wind (Vaisala WMT702 / Gill WO65) SKUs from the same PCB.
+    build_anemometer(
+        vbat=vbat,
+        v3v3=v3v3,
+        gnd=gnd,
+        uart_tx=anemo_uart_tx,
+        uart_rx=anemo_uart_rx,
+        de_n=anemo_de_n,
+    )
 
     skidl.generate_netlist(file_=NETLIST_PATH, tool=skidl.KICAD8)
 

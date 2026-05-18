@@ -25,6 +25,7 @@ LIB_BY_PART: Final = {
     "R": "Device",
     "L": "Device",
     "D_Schottky": "Device",
+    "D_TVS_Dual_AAC": "Device",
     "Polyfuse": "Device",
     "Conn_Coaxial": "Connector",
     "SIM_Card": "Connector",
@@ -34,6 +35,7 @@ LIB_BY_PART: Final = {
     "TXS0108EPW": "Logic_LevelTranslator",
     "ADS1115IDGS": "Analog_ADC",
     "DHT11": "Sensor",
+    "SP3485EN": "Interface_UART",
     "USB_C_Receptacle_USB2.0_14P": "Connector",
 }
 
@@ -64,6 +66,10 @@ VALUE_TO_BLOCK: Final = {
     "BAT": "connectors",
     "DEBUG_UART": "connectors",
     "USBC_COMMISSIONING": "connectors",
+    # anemometer
+    "SP3485EN": "anemometer",
+    "ANEMO_M12_5P": "anemometer",
+    "SM712-like": "anemometer",
 }
 
 # Block-specific nets (for classifying passives that don't have unique values)
@@ -102,6 +108,15 @@ BLOCK_NETS: Final = {
         "GPIO25_VSYNC",
     },
     "connectors": {"DBG_TX", "DBG_RX"},
+    "anemometer": {
+        "ANEMO_RS485_A",
+        "ANEMO_RS485_B",
+        "ANEMO_UART_TX",
+        "ANEMO_UART_RX",
+        "ANEMO_DE",
+        "ANEMO_V_SENSOR",
+        "ANEMO_SHIELD",
+    },
 }
 
 POWER_SYMBOL_BY_NET: Final = {
@@ -225,6 +240,7 @@ SOURCE_FILE_TO_BLOCK: Final = {
     "cellular.py": "cellular",
     "sensors.py": "sensors",
     "connectors.py": "connectors",
+    "anemometer.py": "anemometer",
     "model.py": "connectors",  # model.py's _build_battery_connector previously
 }
 
@@ -267,6 +283,7 @@ BLOCK_TITLES: Final = {
     "cellular": "CELLULAR",
     "sensors": "IEEE 738 SENSORS",
     "connectors": "CONNECTORS",
+    "anemometer": "ANEMOMETER RS-485",
     "misc": "MISC",
 }
 
@@ -501,7 +518,10 @@ def _place_pwr_flags(sch, pwr: PwrCounter, nets_used: set[str]) -> None:
         # power-symbol routing) so the FLAG bank can't y-coincide with any other
         # power symbol on the sheet. Wire must be axis-aligned (KiCad treats
         # diagonals as graphics, not connections).
-        x = 40 + i * 30
+        # x-base 850 puts the bank in the empty right-of-SoM strip on A0
+        # (936 grid wide); was 40 on A1 — that crammed the bank against the
+        # power block and triggered false-merges.
+        x = 850 + i * 30
         y_base = 28 + i * 4
         y = _power_symbol_y(net_name, y_base)
         flg_y = _power_symbol_y(net_name, y - 8)  # FLG below PWR, same residue
@@ -581,17 +601,49 @@ def _label_pins(sch, placed: dict, nets: list[dict]) -> None:
 
 
 def build_schematic() -> None:
-    """Top-level — read layout spec + netlist, classify, place by block, save kicad_sch."""
+    """Top-level — emit hierarchical multi-sheet schematic.
+
+    Root .kicad_sch holds one sheet symbol per functional block; each block
+    becomes its own dlr_carrier-<block>.kicad_sch child file. Per-sheet ERC
+    scope bounds KiCad's y-coincidence false-merge bug.
+    """
+    from cad.schematic.multi_sheet import (
+        build_child_sheet,
+        build_root_sheet,
+        cross_block_nets,
+    )
+
     spec = yaml.safe_load(LAYOUT_SPEC_PATH.read_text())
     components, nets = _parse_netlist(NETLIST_PATH)
     comp_nets = _comp_nets_index(nets)
 
-    # Group components by block
     by_block: dict[str, list[dict]] = {}
     for comp in components:
         block = _classify(comp, comp_nets.get(comp["ref"], set()))
         by_block.setdefault(block, []).append(comp)
 
+    cross_nets = cross_block_nets(by_block, nets)
+    root_path = Path(SCHEMATIC_PATH)
+    block_sheets: list[tuple[str, str, set[str]]] = []
+
+    block_order = [
+        "power", "som", "sensors", "cellular", "connectors", "anemometer", "misc",
+    ]
+    for block_name in block_order:
+        comps = by_block.get(block_name, [])
+        if not comps:
+            continue
+        child_filename = f"{root_path.stem}-{block_name}.kicad_sch"
+        child_path = str(root_path.parent / child_filename)
+        child_cross = build_child_sheet(
+            block_name, comps, nets, cross_nets, child_path
+        )
+        block_sheets.append((block_name, child_filename, child_cross))
+
+    build_root_sheet(block_sheets, str(root_path), spec["title"], nets=nets)
+    return  # below logic is single-sheet legacy, unreachable
+
+    # === Legacy single-sheet path (kept for reference; unreachable above) ===
     ksa.use_grid_units(True)
     sch = ksa.create_schematic(spec["title"])
     sch.set_paper_size(spec.get("sheet_size", "A1"))

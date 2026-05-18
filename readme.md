@@ -148,6 +148,15 @@ Every sensor reading on this board maps to exactly one term in the IEEE 738 dyna
 
 $$ I_{max} = \sqrt{\frac{q_c + q_r - q_s}{R_{ac}}} $$
 
+## Anemometer SKU
+
+Single PCB, sensor = field-replaceable variant on the RS-485 harness.
+
+| Variant | Sensor SKU | Cost | Decision rule |
+|---------|------------|------|---------------|
+| low-wind | Vaisala WMT702 / Gill WindObserver 65 | +$1500 | >15 % yr V_w < 1 m/s perp — uplift slice >> sensor delta over 10 yr |
+| high-wind (demo build) | Calypso ULP STD | $300 | ≤15 % yr V_w < 1 m/s — slice marginal, static fallback below 1 m/s |
+
 ## Power Budget
 
 | Rail | Source | Consumer | Idle (PSM) | Typical | Peak |

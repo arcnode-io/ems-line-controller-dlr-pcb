@@ -1,23 +1,50 @@
-sheet_size: A1
-title: "DLR Carrier Board"
-schematic_path: "cad/dlr_carrier.kicad_sch"
-netlist_path: "cad/dlr_carrier.net"
-
-# A1 = 841x594mm = 662x468 grid units (1 grid = 1.27mm). Block regions
-# place semantically related parts together; within a block, components
-# fill a sub-grid. Inter-block connectivity is via labels.
+sheet_size: A0
+title: DLR Carrier Board
+schematic_path: cad/dlr_carrier.kicad_sch
+netlist_path: cad/dlr_carrier.net
 blocks:
-  # A1 = 662w x 467h grid units. No overlap.
-  # Top row: power | som
-  # Right col bottom: cellular (tall — BG770A is ~80 grid units alone)
-  # Left col bottom: sensors + connectors stacked
-  power:      {origin: [40, 40],   width: 350, height: 180}  # PV/MPPT/buck/LDOs
-  som:        {origin: [410, 40],  width: 220, height: 180}  # CM4 J2 + decoupling
-  sensors:    {origin: [40, 240],  width: 280, height: 130}  # FLIR/DHT/SI/ADS/YL
-  connectors: {origin: [40, 380],  width: 280, height: 70}   # debug + bat
-  cellular:   {origin: [340, 240], width: 230, height: 200}  # BG770A+TXS+uFL+SIM. Reason: width<=230 keeps right edge clear of A1 title block (starts at x=577)
-  misc:       {origin: [40, 455],  width: 580, height: 5}    # fallback (off-canvas)
-
+  power:
+    origin:
+    - 40
+    - 40
+    width: 400
+    height: 260
+  som:
+    origin:
+    - 480
+    - 40
+    width: 320
+    height: 260
+  sensors:
+    origin:
+    - 40
+    - 340
+    width: 400
+    height: 200
+  connectors:
+    origin:
+    - 40
+    - 580
+    width: 400
+    height: 70
+  cellular:
+    origin:
+    - 480
+    - 340
+    width: 300
+    height: 200
+  anemometer:
+    origin:
+    - 470
+    - 590
+    width: 300
+    height: 70
+  misc:
+    origin:
+    - 40
+    - 655
+    width: 800
+    height: 5
 layout_rules:
   routing: labels
   min_component_spacing: 8
