@@ -627,7 +627,13 @@ def build_schematic() -> None:
     block_sheets: list[tuple[str, str, set[str]]] = []
 
     block_order = [
-        "power", "som", "sensors", "cellular", "connectors", "anemometer", "misc",
+        "power",
+        "som",
+        "sensors",
+        "cellular",
+        "connectors",
+        "anemometer",
+        "misc",
     ]
     for block_name in block_order:
         comps = by_block.get(block_name, [])
@@ -635,9 +641,7 @@ def build_schematic() -> None:
             continue
         child_filename = f"{root_path.stem}-{block_name}.kicad_sch"
         child_path = str(root_path.parent / child_filename)
-        child_cross = build_child_sheet(
-            block_name, comps, nets, cross_nets, child_path
-        )
+        child_cross = build_child_sheet(block_name, comps, nets, cross_nets, child_path)
         block_sheets.append((block_name, child_filename, child_cross))
 
     build_root_sheet(block_sheets, str(root_path), spec["title"], nets=nets)
