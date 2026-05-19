@@ -95,10 +95,17 @@ def build_anemometer(
     rs485_b += tvs[3]
 
     # Polyfuse on sensor V+ — 250 mA hold covers Calypso (~5 mA) and
-    # Vaisala/Gill (~40 mA) with margin
+    # Vaisala WMT702 (~30 mA) with margin.
     f = skidl.Part("Device", "Polyfuse", value="250mA", footprint=FP_POLYFUSE)
     vbat += f[1]
     v_sensor += f[2]
+
+    # Lightning / surge clamp on V+ to GND — IEC 61000-4-5 2 kV combination
+    # wave (42 Ω source) per utility-tower deployment. SMBJ24CA bidirectional,
+    # 24 V stand-off, 38.9 V clamp @ 1 A — well below WMT702 max input 36 V.
+    tvs_v = skidl.Part("Device", "D_TVS", value="SMBJ24CA", footprint=FP_TVS)
+    v_sensor += tvs_v[1]
+    gnd += tvs_v[2]
 
     # 5-pin sealed connector — V+, GND, A, B, shield
     # Calypso wiring: brown=V+, white=GND, green=A, yellow=B; shield tied to GND

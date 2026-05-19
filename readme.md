@@ -148,14 +148,58 @@ Every sensor reading on this board maps to exactly one term in the IEEE 738 dyna
 
 $$ I_{max} = \sqrt{\frac{q_c + q_r - q_s}{R_{ac}}} $$
 
-## Anemometer SKU
+## Anemometer Variants
 
-Single PCB, sensor = field-replaceable variant on the RS-485 harness.
+Single PCB + single firmware binary. Variant lives in the **kit BOM** — sensor,
+cable harness, PV panel, and battery differ per SKU. Both sensors speak
+NMEA 0183 (`$..MWV`) over RS-485, so the firmware driver is talker-agnostic.
 
-| Variant | Sensor SKU | Cost | Decision rule |
-|---------|------------|------|---------------|
-| low-wind | Vaisala WMT702 / Gill WindObserver 65 | +$1500 | >15 % yr V_w < 1 m/s perp — uplift slice >> sensor delta over 10 yr |
-| high-wind (demo build) | Calypso ULP STD | $300 | ≤15 % yr V_w < 1 m/s — slice marginal, static fallback below 1 m/s |
+### Kit BOM
+
+| Component | High-wind kit (`DLR-CRN-HW`) | Low-wind kit (`DLR-CRN-LW`) |
+|-----------|------------------------------|------------------------------|
+| PCB | `dlr-pcb-v1` (same) | `dlr-pcb-v1` (same) |
+| Firmware | `dlr-operating-envelope` (same binary) | `dlr-operating-envelope` (same binary) |
+| Sensor | Calypso ULP STD | Vaisala WMT702 |
+| Sensor wire protocol | NMEA `$IIMWV` over RS-485 | NMEA `$WIMWV` over RS-485 |
+| Sensor accuracy (V<2 m/s) | ±5 % + 0.2 m/s offset (1 m/s threshold) | **±0.1 m/s** (0.01 m/s threshold) |
+| Sensor op temp | unspecified (consumer-grade) | -10 to +60 °C |
+| Cable harness | 5 m bare-wire to M12-5P | 5 m Cannon Trident 19-way to M12-5P |
+| PV panel | 20 W | **30 W** |
+| Battery | 50 Wh LiFePO4 | **100 Wh LiFePO4** |
+| Sticker | `HW-1.0` | `LW-1.0` |
+| Kit cost (approx) | ~$650 | ~$2350 |
+
+### When to deploy which variant
+
+Per-site SKU pick uses NREL WIND Toolkit climatology (or customer SCADA wx
+history when available). Threshold: fraction-of-year with V_w < 1 m/s
+perpendicular to conductor.
+
+| Climatology | Variant | Why |
+|---|---|---|
+| ≤ 15 % yr V_w < 1 m/s (ridge / coastal / open plain w/ mean ≥ 6 m/s) | high-wind | uplift slice below 1 m/s is marginal; static fallback below threshold is fine |
+| > 15 % yr V_w < 1 m/s (valley / sheltered / open plain w/ mean ≤ 5 m/s) | low-wind | uplift slice is material; pay $1.7 k premium to capture it |
+
+### Fallback policy (both variants)
+
+When the sensor reports `void` status, times out, or has a checksum/parse
+error, the driver returns `None`. The IEEE 738 layer collapses None →
+`V_w = 0.0` → natural-convection-only ampacity = the conductor's static
+rating. Same conservative fallback used for the icing-fallback policy.
+
+### Variant power budget
+
+| | High-wind | Low-wind |
+|---|---|---|
+| Sensor continuous draw | 1 mW | 480 mW |
+| System daily energy | 29.1 Wh | 40.6 Wh |
+| Winter PV harvest (worst) | 45 Wh | 67.5 Wh |
+| Winter margin | 1.55× | **1.66×** |
+| Battery autonomy at 0 PV | 1.58 d | **2.22 d** |
+
+Low-wind variant's 30 W / 100 Wh upgrade absorbs the WMT702's higher draw and
+restores both winter margin and 2-day autonomy.
 
 ## Power Budget
 

@@ -25,6 +25,7 @@ LIB_BY_PART: Final = {
     "R": "Device",
     "L": "Device",
     "D_Schottky": "Device",
+    "D_TVS": "Device",
     "D_TVS_Dual_AAC": "Device",
     "Polyfuse": "Device",
     "Conn_Coaxial": "Connector",
@@ -70,6 +71,7 @@ VALUE_TO_BLOCK: Final = {
     "SP3485EN": "anemometer",
     "ANEMO_M12_5P": "anemometer",
     "SM712-like": "anemometer",
+    "SMBJ24CA": "anemometer",
 }
 
 # Block-specific nets (for classifying passives that don't have unique values)

@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "00d6b132-d0e3-467f-a569-c23545c9f155")
+	(uuid "15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f")
 	(paper "A3")
 	(title_block
 		(title "DLR Carrier — ANEMOMETER RS-485")
@@ -335,6 +335,156 @@
 				)
 				(pin passive line
 					(at 8.89 0 180)
+					(length 2.54)
+					(name "A2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:D_TVS"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "D_TVS"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Bidirectional transient-voltage-suppression diode"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "diode TVS thyrector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "D_TVS_0_1"
+				(polyline
+					(pts
+						(xy -2.54 1.27) (xy -2.54 -1.27) (xy 2.54 1.27) (xy 2.54 -1.27) (xy -2.54 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.508 1.27) (xy 0 1.27) (xy 0 -1.27) (xy -0.508 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 0) (xy -1.27 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "D_TVS_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
 					(length 2.54)
 					(name "A2"
 						(effects
@@ -1513,16 +1663,16 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 96.52 123.19 0)
+		(at 90.17 87.63 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "8d1e18e9-18e6-4447-8a5b-3e4dff5abd27")
+		(uuid "cba136a3-6c94-4fce-9b57-52625789e888")
 		(property "Reference" "C30"
-			(at 97.155 125.73 0.0000)
+			(at 90.805 90.17 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1531,7 +1681,7 @@
 			)
 		)
 		(property "Value" "100nF"
-			(at 97.155 120.65 0.0000)
+			(at 90.805 85.09 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1540,7 +1690,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 97.4852 119.38 0.0000)
+			(at 91.1352 83.82 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1549,14 +1699,14 @@
 			)
 		)
 		(pin "1"
-			(uuid "fa2d8440-c5fa-4dbc-ae49-efc0780cc48c")
+			(uuid "bc2e9fdf-8254-4cd3-929f-7468505a6d4a")
 		)
 		(pin "2"
-			(uuid "911f5a85-449b-4cc5-b365-3dca407ad692")
+			(uuid "f218d9e0-19e1-4e5a-9443-9e72b6841466")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "C30")
 					(unit 1)
 				)
@@ -1565,16 +1715,16 @@
 	)
 	(symbol
 		(lib_id "Device:D_TVS_Dual_AAC")
-		(at 189.23 101.6 0)
+		(at 179.07 82.55 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b1e23d1c-fa47-4ed4-ac42-8af1a09f0149")
+		(uuid "5b736d82-4841-403c-844a-c0841b5e23d9")
 		(property "Reference" "D2"
-			(at 189.23 106.045 0.0000)
+			(at 179.07 86.995 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1583,7 +1733,7 @@
 			)
 		)
 		(property "Value" "SM712-like"
-			(at 189.23 104.14 0.0000)
+			(at 179.07 85.09 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1592,7 +1742,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 185.42 101.6 0.0000)
+			(at 175.26 82.55 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1601,17 +1751,17 @@
 			)
 		)
 		(pin "1"
-			(uuid "b5b527a1-f9ac-458d-b471-2e00ea294179")
+			(uuid "f34aa1cf-c0ca-4a43-9f35-9f907f155288")
 		)
 		(pin "3"
-			(uuid "24b9391e-e46c-409d-a602-52e5d6e970d3")
+			(uuid "87fd6897-0069-4c1c-a84e-088b4cefd84c")
 		)
 		(pin "2"
-			(uuid "81998dee-5027-4fa4-a431-36cd7a624b13")
+			(uuid "8942e3da-8952-48ad-8ab7-6acc47b5c0ef")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "D2")
 					(unit 1)
 				)
@@ -1619,17 +1769,69 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:Polyfuse")
-		(at 267.97 125.73 0)
+		(lib_id "Device:D_TVS")
+		(at 273.05 91.44 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "cdd27e39-c096-4cc4-a33a-be7aa6dd0024")
+		(uuid "6a2877c8-6c91-45c4-9060-7213b12e013e")
+		(property "Reference" "D3"
+			(at 273.05 93.98 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SMBJ24CA"
+			(at 273.05 88.9 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 273.05 91.44 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1e48f2a5-1602-4ffb-b8a7-a183872b2713")
+		)
+		(pin "2"
+			(uuid "9b5574e9-3952-4251-a0c9-df09535e8e0c")
+		)
+		(instances
+			(project "ANEMOMETER RS-485"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
+					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Polyfuse")
+		(at 349.25 101.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "3e2a3d40-1457-4d64-813f-6c6c6d973627")
 		(property "Reference" "F1"
-			(at 265.43 125.73 90)
+			(at 346.71 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1638,7 +1840,7 @@
 			)
 		)
 		(property "Value" "250mA"
-			(at 270.51 125.73 90)
+			(at 351.79 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1647,7 +1849,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 269.24 120.65 0.0000)
+			(at 350.52 96.52 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1656,14 +1858,14 @@
 			)
 		)
 		(pin "1"
-			(uuid "904a5f31-5497-46b0-a1e1-1920902624f8")
+			(uuid "99af67ea-79fc-4f07-a8d0-fd6e0ecd4f9e")
 		)
 		(pin "2"
-			(uuid "eb54c577-a835-46f7-a76e-fc4f63e926ec")
+			(uuid "6f46c172-0d73-48a7-a27f-a125260976b9")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "F1")
 					(unit 1)
 				)
@@ -1672,16 +1874,16 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x05")
-		(at 354.33 123.19 0)
+		(at 96.52 180.34 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a93fcb00-813a-4168-8001-c4f3b64e8765")
+		(uuid "2092a52b-ac0e-4656-8a15-86f8fceb11d7")
 		(property "Reference" "J13"
-			(at 354.33 130.81 0.0000)
+			(at 96.52 187.96 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1690,7 +1892,7 @@
 			)
 		)
 		(property "Value" "ANEMO_M12_5P"
-			(at 354.33 115.57 0.0000)
+			(at 96.52 172.72 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1699,7 +1901,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
-			(at 354.33 123.19 0.0000)
+			(at 96.52 180.34 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1708,23 +1910,23 @@
 			)
 		)
 		(pin "1"
-			(uuid "1fdbf4be-e4d9-4412-9961-f010c7d029f9")
+			(uuid "6657ca6b-1798-45a6-b59c-4abfa1c92ea6")
 		)
 		(pin "2"
-			(uuid "a6b415b6-1709-41ae-ba0d-ff8c3c6ecce1")
+			(uuid "88ed83b8-9036-4abf-b7b1-e0f013e237ab")
 		)
 		(pin "3"
-			(uuid "71d669c5-0d7c-41b4-8924-cea9d758092b")
+			(uuid "4a9e9e30-1ddf-478a-8a7c-d19e944060e7")
 		)
 		(pin "4"
-			(uuid "9468c9b0-0239-431f-80e8-dd3ec6f70e0d")
+			(uuid "55124570-7c3c-4298-9fd4-8118c3f6a1c7")
 		)
 		(pin "5"
-			(uuid "904904e6-38eb-4513-8314-2bd96fe52a41")
+			(uuid "9926efa5-a299-4526-bc10-1712b15c0431")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "J13")
 					(unit 1)
 				)
@@ -1733,16 +1935,16 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 95.25 232.41 0)
+		(at 186.69 176.53 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c0e01909-5bf0-4074-9851-146c9b0efd1c")
+		(uuid "55876851-af80-4eca-a8aa-fb8f37ca5178")
 		(property "Reference" "R14"
-			(at 97.282 232.41 90)
+			(at 188.722 176.53 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1751,7 +1953,7 @@
 			)
 		)
 		(property "Value" "120"
-			(at 95.25 232.41 90)
+			(at 186.69 176.53 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1760,7 +1962,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 93.472 232.41 90)
+			(at 184.912 176.53 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1769,14 +1971,14 @@
 			)
 		)
 		(pin "1"
-			(uuid "e3e2f73c-2b77-45b1-aeb1-637caaa4a847")
+			(uuid "a047722b-7ebd-4ed2-a7ec-a847d72e3d98")
 		)
 		(pin "2"
-			(uuid "9211bbc7-5e5c-4071-a42c-12a132e8050a")
+			(uuid "72f1e05a-94d2-4b80-bf2b-8a4ca347cd0b")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "R14")
 					(unit 1)
 				)
@@ -1785,16 +1987,16 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 173.99 248.92 0)
+		(at 274.32 177.8 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "27d1d97c-fa3b-49f1-b94c-e32441dbaadf")
+		(uuid "971a86ef-95bb-410d-a7df-6618964f8ee9")
 		(property "Reference" "R15"
-			(at 176.022 248.92 90)
+			(at 276.352 177.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1803,7 +2005,7 @@
 			)
 		)
 		(property "Value" "680"
-			(at 173.99 248.92 90)
+			(at 274.32 177.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1812,7 +2014,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 172.212 248.92 90)
+			(at 272.542 177.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1821,14 +2023,14 @@
 			)
 		)
 		(pin "1"
-			(uuid "6f156f4a-55c8-442a-b00e-b40a1320dfcf")
+			(uuid "e291534c-5f6b-4cc0-81e6-6d00f95ccf17")
 		)
 		(pin "2"
-			(uuid "540f0ce8-0563-429d-9068-604e0c75cb24")
+			(uuid "64c222c7-1ec5-4ff7-9793-ade79ea5fc3b")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "R15")
 					(unit 1)
 				)
@@ -1837,16 +2039,16 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 276.86 241.3 0)
+		(at 367.03 190.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "790ff86f-5677-4ce4-bf7e-0497b85baa95")
+		(uuid "d94dd526-8e90-4ba7-a5f1-e269e2e012da")
 		(property "Reference" "R16"
-			(at 278.892 241.3 90)
+			(at 369.062 190.5 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1855,7 +2057,7 @@
 			)
 		)
 		(property "Value" "680"
-			(at 276.86 241.3 90)
+			(at 367.03 190.5 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1864,7 +2066,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 275.082 241.3 90)
+			(at 365.252 190.5 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1873,14 +2075,14 @@
 			)
 		)
 		(pin "1"
-			(uuid "1c0283e1-9c25-494a-b0ec-3e9cef14e828")
+			(uuid "76d9252f-f523-49f9-bc1e-ce6136b8d90e")
 		)
 		(pin "2"
-			(uuid "39bb82f0-6a42-47c3-bf76-1127977af55a")
+			(uuid "3777c218-372c-47b5-9a8a-55516ae293ee")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "R16")
 					(unit 1)
 				)
@@ -1889,16 +2091,16 @@
 	)
 	(symbol
 		(lib_id "Interface_UART:SP3485EN")
-		(at 360.68 237.49 0)
+		(at 87.63 251.46 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "6a570897-9447-4084-a07e-0f2fbd8ade3d")
+		(uuid "70850960-3b99-42ee-893c-d155fa696a35")
 		(property "Reference" "U7"
-			(at 353.06 251.46 0.0000)
+			(at 80.01 265.43 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1907,7 +2109,7 @@
 			)
 		)
 		(property "Value" "SP3485EN"
-			(at 362.585 251.46 0.0000)
+			(at 89.535 265.43 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1916,7 +2118,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 387.35 228.6 0.0000)
+			(at 114.3 242.57 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1925,32 +2127,32 @@
 			)
 		)
 		(pin "1"
-			(uuid "12f3bdeb-e4d9-4c66-ae74-81a082308500")
+			(uuid "00256c0f-972a-4a81-a42a-5296c317de7a")
 		)
 		(pin "2"
-			(uuid "4da4cb7f-11a7-4bee-bee5-532bb0ed1b63")
+			(uuid "de9c2fda-6cda-4d78-960c-2ecccd6916a2")
 		)
 		(pin "3"
-			(uuid "43fbae77-7f50-48ac-8d00-474e29a9ebee")
+			(uuid "c52d9346-e6b7-47ad-bd78-08d052b834a1")
 		)
 		(pin "4"
-			(uuid "c1b30240-1ac5-44a8-b00e-ffb122df1938")
+			(uuid "9aba3d2c-05a0-4cce-93b9-be81111783c3")
 		)
 		(pin "8"
-			(uuid "9ecebc36-283e-4746-85a0-7fd91920ef16")
+			(uuid "9b3d3b76-0316-408b-be42-b8c5d40a5ffc")
 		)
 		(pin "5"
-			(uuid "262efb53-577e-41e8-ba00-c53f727bfd4e")
+			(uuid "640c4f5a-db85-45e1-aa05-54c7914d3f84")
 		)
 		(pin "6"
-			(uuid "c5bc84a0-f849-494d-9c89-074ae8cd2acc")
+			(uuid "f33db51e-9838-4574-9a84-814e95254527")
 		)
 		(pin "7"
-			(uuid "7c16294b-6308-468e-9b28-c1bb042b6d4e")
+			(uuid "a33afba0-a842-40e4-a55b-1c0f10fdce03")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "U7")
 					(unit 1)
 				)
@@ -1959,16 +2161,16 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 96.52 114.3 0)
+		(at 90.17 78.74 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "34dd8572-930e-4f9c-bd1f-3cbb6a942114")
+		(uuid "6fb99824-ffae-45ca-b5dc-1a4a5bb15b46")
 		(property "Reference" "#PWR001"
-			(at 96.52 110.49 0.0000)
+			(at 90.17 74.93 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1978,7 +2180,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 96.52 109.22 0)
+			(at 90.17 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1986,11 +2188,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "47d59460-665a-476a-87ac-e984481c328f")
+			(uuid "737c4ea3-6fb2-48ec-b20b-1977c12a96b9")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR001")
 					(unit 1)
 				)
@@ -1999,16 +2201,16 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 173.99 236.22 0)
+		(at 274.32 165.1 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "7e7dbc13-d956-455b-b8b9-0455eb491dda")
+		(uuid "7de77212-a361-4409-b97a-6ffa5c1b35df")
 		(property "Reference" "#PWR002"
-			(at 173.99 232.41 0.0000)
+			(at 274.32 161.29 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2018,7 +2220,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 173.99 231.14 0)
+			(at 274.32 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2026,11 +2228,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "4bc3f47b-9e0f-47f8-a173-36aeab4e28b9")
+			(uuid "419c053b-0500-4590-944e-3ed7ef79e1d3")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR002")
 					(unit 1)
 				)
@@ -2039,16 +2241,16 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 360.68 215.9 0)
+		(at 87.63 231.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "41b22956-5621-4c52-b355-796fb0e7d934")
+		(uuid "3b25544f-b3bf-4de1-8ab5-76c2bddc374e")
 		(property "Reference" "#PWR003"
-			(at 360.68 212.09 0.0000)
+			(at 87.63 227.33 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2058,7 +2260,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 360.68 210.82 0)
+			(at 87.63 226.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2066,11 +2268,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "38236b91-5cdf-4cba-8e75-768694047409")
+			(uuid "29235750-b025-43f2-b2c6-9acb020f91fc")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR003")
 					(unit 1)
 				)
@@ -2079,16 +2281,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 96.52 137.16 0)
+		(at 90.17 101.6 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "4fd23e4a-05df-4bef-bfdb-e0f0bf859531")
+		(uuid "0054bdd3-f0d9-4ad8-b27f-36946923a3af")
 		(property "Reference" "#PWR004"
-			(at 96.52 130.81 0.0000)
+			(at 90.17 95.25 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2098,7 +2300,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 96.52 142.24 0)
+			(at 90.17 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2106,11 +2308,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "b473a286-dfc7-4ace-8da0-4eebf8dac6bb")
+			(uuid "e385e6e8-98ef-4942-b46e-c0fe1387385d")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR004")
 					(unit 1)
 				)
@@ -2119,16 +2321,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 198.12 111.76 0)
+		(at 187.96 91.44 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "63ddcd44-b6c2-477c-bbe3-2481d290e49f")
+		(uuid "7bb4f329-c8cd-493a-ab0e-fe225d71bddb")
 		(property "Reference" "#PWR005"
-			(at 198.12 105.41 0.0000)
+			(at 187.96 85.09 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2138,7 +2340,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 198.12 116.84 0)
+			(at 187.96 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2146,11 +2348,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "8db9c789-2d6e-43ce-b82b-8622c27278e6")
+			(uuid "b6a01042-4e8f-4478-af9a-eab2811523fb")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR005")
 					(unit 1)
 				)
@@ -2159,16 +2361,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 349.25 121.92 0)
+		(at 276.86 101.6 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "9581671b-e0d4-4747-bc4a-1b87cf8cdfcb")
+		(uuid "a2df4e99-2082-4109-b7dd-a388cae1dbaa")
 		(property "Reference" "#PWR006"
-			(at 349.25 115.57 0.0000)
+			(at 276.86 95.25 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2178,7 +2380,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 349.25 127 0)
+			(at 276.86 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2186,11 +2388,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "c0142d52-eb0c-4047-b56b-6d95ae65e324")
+			(uuid "28f5ff3d-6e2d-4bb1-80a3-f0d8111b9904")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR006")
 					(unit 1)
 				)
@@ -2199,16 +2401,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 349.25 132.08 0)
+		(at 91.44 182.88 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "795b959f-e1c8-4203-b2b8-cfd6946417ec")
+		(uuid "b2998dae-f729-4b71-a39c-908bb17dba58")
 		(property "Reference" "#PWR007"
-			(at 349.25 125.73 0.0000)
+			(at 91.44 176.53 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2218,7 +2420,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 349.25 137.16 0)
+			(at 91.44 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2226,11 +2428,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "0ec241b7-cb30-432a-b0e5-0730e61b930f")
+			(uuid "c9a48024-0184-4986-85ed-72934b5a7a48")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR007")
 					(unit 1)
 				)
@@ -2239,16 +2441,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 276.86 254 0)
+		(at 91.44 187.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b338f0e7-3dfe-46c9-9960-f17ae3104577")
+		(uuid "c021b927-25c4-4e68-815a-025e8d097246")
 		(property "Reference" "#PWR008"
-			(at 276.86 247.65 0.0000)
+			(at 91.44 181.61 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2258,7 +2460,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 276.86 259.08 0)
+			(at 91.44 193.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2266,11 +2468,11 @@
 			)
 		)
 		(pin "1"
-			(uuid "5031fad4-7056-47b0-81b8-ccf9fbd71b50")
+			(uuid "3896f58f-9b94-4e11-ab62-eb353456c6b1")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR008")
 					(unit 1)
 				)
@@ -2279,16 +2481,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 360.68 259.08 0)
+		(at 367.03 203.2 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "2083b3e1-d104-4d40-86d8-f03326b8c9e4")
+		(uuid "8d812ace-7bb2-4562-b693-8ec2fe51eeb2")
 		(property "Reference" "#PWR009"
-			(at 360.68 252.73 0.0000)
+			(at 367.03 196.85 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2298,7 +2500,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 360.68 264.16 0)
+			(at 367.03 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2306,12 +2508,52 @@
 			)
 		)
 		(pin "1"
-			(uuid "a87767ac-4749-4a57-b558-53900b56c360")
+			(uuid "e6d10533-5cb6-416a-a0d7-52b3a6eabe47")
 		)
 		(instances
 			(project "ANEMOMETER RS-485"
-				(path "/00d6b132-d0e3-467f-a569-c23545c9f155"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
 					(reference "#PWR009")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 87.63 274.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "44590bd8-aa3a-4914-9ac9-a137de10c1ef")
+		(property "Reference" "#PWR010"
+			(at 87.63 267.97 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 87.63 279.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c847c6eb-7980-4d37-98d5-6980c72ecafd")
+		)
+		(instances
+			(project "ANEMOMETER RS-485"
+				(path "/15eab5a5-0c0d-4a4a-ba9c-d42ee097f50f"
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -2319,438 +2561,468 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 119.38) (xy 96.52 114.3)
+			(xy 90.17 83.82) (xy 90.17 78.74)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "eb57e8ad-7235-4664-8f55-77f328919388")
+		(uuid "fdac14fa-7b1b-4ef5-9a1b-609b0ba7cb43")
 	)
 	(wire
 		(pts
-			(xy 173.99 245.11) (xy 173.99 236.22)
+			(xy 274.32 173.99) (xy 274.32 165.1)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "10808f00-1d95-4a71-9f22-99ad48d7c365")
+		(uuid "2803fb4e-80f8-4884-9f3e-69859f694897")
 	)
 	(wire
 		(pts
-			(xy 360.68 222.25) (xy 360.68 215.9)
+			(xy 87.63 236.22) (xy 87.63 231.14)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a8993268-df1a-4851-826e-4249d68bb334")
+		(uuid "2b3e2d43-3310-47af-9ebd-6afc51a21a4d")
 	)
 	(wire
 		(pts
-			(xy 180.34 101.6) (xy 175.26 101.6)
+			(xy 170.18 82.55) (xy 165.1 82.55)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "eb3ef2d3-4303-43c1-974f-90f5997e5f86")
+		(uuid "a226ea00-d205-44be-a380-fe67fe2949ad")
 	)
 	(wire
 		(pts
-			(xy 349.25 123.19) (xy 344.17 123.19)
+			(xy 91.44 180.34) (xy 86.36 180.34)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0610777d-0bfe-4640-9a63-72cfa41eb206")
+		(uuid "1cba7c5f-34f4-44b1-bb28-4f2cba01a9fa")
 	)
 	(wire
 		(pts
-			(xy 95.25 228.6) (xy 95.25 223.52)
+			(xy 186.69 172.72) (xy 186.69 167.64)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "c07b79bd-2056-4e03-b916-a4ad5aa4adfa")
+		(uuid "7a61af05-7647-41c0-bec0-c42f9eed9699")
 	)
 	(wire
 		(pts
-			(xy 173.99 252.73) (xy 173.99 262.89)
+			(xy 274.32 181.61) (xy 274.32 191.77)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "06e545ca-ee91-4e6f-b37e-9ca041d60dab")
+		(uuid "4a190651-0d84-493c-b89b-ca9c24a8c6d2")
 	)
 	(wire
 		(pts
-			(xy 370.84 229.87) (xy 381 229.87)
+			(xy 97.79 243.84) (xy 107.95 243.84)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8c462016-f4c3-411f-9490-05cd25c50785")
+		(uuid "4b96f5f9-8aa3-40d9-85ec-aec880b58fed")
 	)
 	(wire
 		(pts
-			(xy 189.23 105.41) (xy 189.23 115.57)
+			(xy 179.07 86.36) (xy 179.07 96.52)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "1e058cbb-edb9-450b-8e0d-cb3c274d2a98")
+		(uuid "6b0ebd25-9bb1-4d48-bf52-18b92af9a945")
 	)
 	(wire
 		(pts
-			(xy 349.25 125.73) (xy 344.17 125.73)
+			(xy 91.44 182.88) (xy 86.36 182.88)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f3d541c2-f28b-4218-9930-3951537f7324")
+		(uuid "24b17582-2e15-4912-9f91-2f233e2e0b3f")
 	)
 	(wire
 		(pts
-			(xy 95.25 236.22) (xy 95.25 246.38)
+			(xy 186.69 180.34) (xy 186.69 190.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "38e5e524-14bc-40c0-a815-ee8c8095b5e7")
+		(uuid "f83d7c33-67c3-42e7-9909-afce6a678b60")
 	)
 	(wire
 		(pts
-			(xy 276.86 237.49) (xy 276.86 232.41)
+			(xy 367.03 186.69) (xy 367.03 181.61)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b3e55a7f-1c7f-4b5b-97a0-0f41cc507560")
+		(uuid "ea8b991a-27db-4021-b368-9245c6dbb26a")
 	)
 	(wire
 		(pts
-			(xy 370.84 234.95) (xy 381 234.95)
+			(xy 97.79 248.92) (xy 107.95 248.92)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "3644f086-fdbe-4a3a-806f-4c77901f3894")
+		(uuid "a8ea4f52-6583-4b16-94c0-f17cdaa1dff0")
 	)
 	(wire
 		(pts
-			(xy 350.52 232.41) (xy 345.44 232.41)
+			(xy 77.47 246.38) (xy 72.39 246.38)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6b20319b-cad7-4500-ab94-0f6e77c19e79")
+		(uuid "1e77cd71-f884-46ae-be25-e82462bb66ff")
 	)
 	(wire
 		(pts
-			(xy 350.52 242.57) (xy 345.44 242.57)
+			(xy 77.47 256.54) (xy 72.39 256.54)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "97936a67-8219-406c-a88f-f04b6e059323")
+		(uuid "45a06b54-6ce8-46c8-aa80-a5e3ac817e80")
 	)
 	(wire
 		(pts
-			(xy 267.97 129.54) (xy 267.97 139.7)
+			(xy 269.24 91.44) (xy 264.16 91.44)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "4dec6068-25c7-48f8-806b-e0cf7703469f")
+		(uuid "b756daea-8f7e-4d3a-aa13-ba1c8ec3e450")
 	)
 	(wire
 		(pts
-			(xy 349.25 118.11) (xy 344.17 118.11)
+			(xy 349.25 105.41) (xy 349.25 115.57)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a222e505-fcdc-41d3-a572-f32f1b73f745")
+		(uuid "fdbc699a-c2f2-4765-a58d-c1fec2953317")
 	)
 	(wire
 		(pts
-			(xy 96.52 127) (xy 96.52 137.16)
+			(xy 91.44 175.26) (xy 86.36 175.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "832fa6d0-d24b-4f5e-8f75-feb368ca3664")
+		(uuid "a889b148-ee9f-4a0e-ad25-109a3b785efe")
 	)
 	(wire
 		(pts
-			(xy 198.12 101.6) (xy 198.12 111.76)
+			(xy 90.17 91.44) (xy 90.17 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "18807ac3-7315-47eb-9264-cc324aa25938")
+		(uuid "74aacfd2-e64b-4a9d-8224-ac4f40859313")
 	)
 	(wire
 		(pts
-			(xy 349.25 120.65) (xy 349.25 121.92)
+			(xy 187.96 82.55) (xy 187.96 91.44)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "4bf6316e-a052-4f18-bc34-66a5d7778e08")
+		(uuid "add463c3-0628-4cb3-987d-182ed89c623d")
 	)
 	(wire
 		(pts
-			(xy 349.25 128.27) (xy 349.25 132.08)
+			(xy 276.86 91.44) (xy 276.86 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "046a6588-61a6-4b64-994a-93cc080196fd")
+		(uuid "25cdfe4b-6725-48a6-970b-9ac5abf5ef0f")
 	)
 	(wire
 		(pts
-			(xy 276.86 245.11) (xy 276.86 254)
+			(xy 91.44 177.8) (xy 91.44 182.88)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "27771157-7021-40ff-8c73-b91a1670e0c8")
+		(uuid "dca137e4-c761-4f87-b4e4-d607154abddc")
 	)
 	(wire
 		(pts
-			(xy 360.68 252.73) (xy 360.68 259.08)
+			(xy 91.44 185.42) (xy 91.44 187.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "73c48d0c-3cd3-4295-9add-e0e02472b20c")
+		(uuid "c342d92f-d431-4fbf-a9a8-495ff5229bcc")
 	)
 	(wire
 		(pts
-			(xy 350.52 234.95) (xy 345.44 234.95)
+			(xy 367.03 194.31) (xy 367.03 203.2)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b04e0a80-282b-4bc8-b24b-7fd031456f34")
+		(uuid "cb067169-3611-4c1e-86f6-a74b4297c357")
 	)
 	(wire
 		(pts
-			(xy 350.52 237.49) (xy 345.44 237.49)
+			(xy 87.63 266.7) (xy 87.63 274.32)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "46aa831b-539d-4349-8fb6-02faec963244")
+		(uuid "c7653c4c-8422-45b3-888d-9dc20f6508f5")
 	)
 	(wire
 		(pts
-			(xy 267.97 121.92) (xy 267.97 116.84)
+			(xy 77.47 248.92) (xy 72.39 248.92)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "fa095163-4225-47e7-b05f-ca963630ab98")
+		(uuid "91e92e47-9157-4290-8bb3-ea8bdefb1568")
+	)
+	(wire
+		(pts
+			(xy 77.47 251.46) (xy 72.39 251.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f924f7e1-579e-4a0f-9f18-78d12dfc102b")
+	)
+	(wire
+		(pts
+			(xy 349.25 97.79) (xy 349.25 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "097c4dfd-88b9-4d1d-86bd-5167514db73d")
 	)
 	(label "ANEMO_RS485_A"
-		(at 175.26 101.6 180)
+		(at 165.1 82.55 180)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "65231edb-da78-462c-9c47-6272128169d0")
+		(uuid "ea6ea2eb-1ae5-4697-942b-88c629b56899")
 	)
 	(label "ANEMO_RS485_A"
-		(at 344.17 123.19 180)
+		(at 86.36 180.34 180)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "e4485fca-a3e5-420b-ab49-1403cdbc2054")
+		(uuid "9ba718d8-de96-4eb0-9e9d-e2c6a903bf84")
 	)
 	(label "ANEMO_RS485_A"
-		(at 95.25 223.52 90)
+		(at 186.69 167.64 90)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "91537699-49a3-4f9e-8a6b-759421c4367b")
+		(uuid "d356969d-2bf8-4835-946c-4590173efcb6")
 	)
 	(label "ANEMO_RS485_A"
-		(at 173.99 262.89 270)
+		(at 274.32 191.77 270)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "b4acf951-530f-4d60-b43e-9f9040b9079a")
+		(uuid "9f0c5617-820a-480e-a898-dc6a4650dd62")
 	)
 	(label "ANEMO_RS485_A"
-		(at 381 229.87 0)
+		(at 107.95 243.84 0)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "30eb0c86-a5d4-474f-80ad-50ff63820c64")
+		(uuid "03db40e7-14c0-471c-b99e-04c7ffa2a9de")
 	)
 	(label "ANEMO_RS485_B"
-		(at 189.23 115.57 270)
+		(at 179.07 96.52 270)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "f1207562-4b20-4906-baae-efb1d9fffbe5")
+		(uuid "169c28f1-ac82-40b6-bc9b-838852df1f4c")
 	)
 	(label "ANEMO_RS485_B"
-		(at 344.17 125.73 180)
+		(at 86.36 182.88 180)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "ed9f345f-53dd-41f6-becb-a4ee0c3a50bb")
+		(uuid "94b4e204-e017-4d69-b64b-6b46323085c7")
 	)
 	(label "ANEMO_RS485_B"
-		(at 95.25 246.38 270)
+		(at 186.69 190.5 270)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "a5a088a3-d275-4d73-b7c5-4d1890b9cb29")
+		(uuid "73c2161f-0242-4bb0-93c7-0240bfbece06")
 	)
 	(label "ANEMO_RS485_B"
-		(at 276.86 232.41 90)
+		(at 367.03 181.61 90)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "f68859fc-72b6-4635-ba2d-40204fcce25c")
+		(uuid "f99371d3-2b81-4b13-b4f1-cd78574bf86a")
 	)
 	(label "ANEMO_RS485_B"
-		(at 381 234.95 0)
+		(at 107.95 248.92 0)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "9c2213a0-5e97-499c-a7fb-accd8dcbc591")
+		(uuid "12ca706d-9611-44d0-81e3-5640e8109c51")
 	)
 	(label "ANEMO_V_SENSOR"
-		(at 267.97 139.7 270)
+		(at 264.16 91.44 180)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "4fc978ca-1ff7-40f4-a2e5-4b6703eb0e3f")
+		(uuid "9851f3d6-e1c2-4f15-b00f-47f0c22026e4")
 	)
 	(label "ANEMO_V_SENSOR"
-		(at 344.17 118.11 180)
+		(at 349.25 115.57 270)
 		(effects
 			(font
 				(size 0.8 0.8)
 			)
 			(justify left bottom)
 		)
-		(uuid "faf1d47f-90ac-45a6-b9b8-eba50aa4cc81")
+		(uuid "906320fb-911d-4f3a-b511-af6e6cee5774")
+	)
+	(label "ANEMO_V_SENSOR"
+		(at 86.36 175.26 180)
+		(effects
+			(font
+				(size 0.8 0.8)
+			)
+			(justify left bottom)
+		)
+		(uuid "e70edc3a-4793-429a-9b92-e4099009107a")
 	)
 	(hierarchical_label "ANEMO_UART_RX"
 		(shape input)
-		(at 345.44 232.41 180)
+		(at 72.39 246.38 180)
 		(effects
 			(font
 				(size 1 1)
 			)
 			(justify left)
 		)
-		(uuid "916cebe8-680a-4a12-aef5-188deef9ab54")
+		(uuid "34ad8905-ab36-4891-a951-6c5713d0fb5b")
 	)
 	(hierarchical_label "ANEMO_UART_TX"
 		(shape input)
-		(at 345.44 242.57 180)
+		(at 72.39 256.54 180)
 		(effects
 			(font
 				(size 1 1)
 			)
 			(justify left)
 		)
-		(uuid "9d16b2ab-cb56-462d-b4bd-2bb321e7cd95")
+		(uuid "2a363d2b-fbd6-4af7-9b3d-d550f4ede881")
 	)
 	(hierarchical_label "NC_CM4_31"
 		(shape input)
-		(at 345.44 234.95 180)
+		(at 72.39 248.92 180)
 		(effects
 			(font
 				(size 1 1)
 			)
 			(justify left)
 		)
-		(uuid "834c521f-9de7-496f-9e3c-36bd9b068d76")
+		(uuid "92270413-9662-43f5-8b9d-94c7f78cac00")
 	)
 	(hierarchical_label "NC_CM4_31"
 		(shape input)
-		(at 345.44 237.49 180)
+		(at 72.39 251.46 180)
 		(effects
 			(font
 				(size 1 1)
 			)
 			(justify left)
 		)
-		(uuid "d474e463-4d64-46f5-9cb1-c9b33504174a")
+		(uuid "4f8829b2-6559-4401-9680-e7e44e447d9b")
 	)
 	(hierarchical_label "VBAT"
 		(shape input)
-		(at 267.97 116.84 90)
+		(at 349.25 92.71 90)
 		(effects
 			(font
 				(size 1 1)
 			)
 			(justify left)
 		)
-		(uuid "c66fb615-2a67-43c8-a8d0-3499f2006c7e")
+		(uuid "fa4ff705-0a49-41b8-aabd-4cafe51c4dcc")
 	)
 	(sheet_instances
 		(path "/"
